@@ -1,0 +1,70 @@
+Bonjour,
+
+Les installations des machines GPU sont terminées; Vous en avez une par
+binôme :
+
+Amandine/Yann : machine gpu00.metz.supelec.fr
+Titouan/Quentin : machine gpu01.metz.supelec.fr
+
+Les deux machines sont équipées de GeForce GTX 480 ; C'est pas une GPU
+dernière génération mais ce sera, je l'espère, tout de même mieux qu'en
+CPU. Pour en savoir plus sur ces GPU, il y a le binaire :
+/opt/cuda/samples/1_Utilities/deviceQuery
+
+J'ai installé TensorFlow, caffe et pycaffe à partir des sources (qui
+sont dans /opt). Ces GPU ont des CUDA Capability 2.0 ; Cela implique
+qu'elles ne sont en fait pas supportées par TensorFlow qui supporte
+officiellement des GPU avec des capability >= 3.5 et officieusement
+avec >= 3.0; TensorFlow indique alors qu'il utilise uniquement le CPU;
+Par contre, ces GPU sont reconnues par caffe;
+
+****** Se logger ********
+Vous pouvez vous logger sur ces postes comme vous vous loggez d'habitude
+sur une machine du campus , votre home sera monté;
+
+****** Variables d'environnements *****
+Comme les librairies et wrapper python ne sont pas installés dans les
+chemins standards, il vous faut ajouter quelques exports dans votre
+~/.bashrc :
+
+export PATH=$PATH:/usr/local/bin:/opt/cuda/bin
+export
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/cuda/lib64:/opt/cudnn-6.5-linux-x64-v2
+export CAFFE_HOME=/opt/caffe
+export PYTHONPATH=$CAFFE_HOME/python:$PYTHONPATH
+
+****** Accéder aux datasets de cédric ******
+
+Dans /opt, il y a un script bash "mount_cei_gt.sh" que vous pouvez
+copier sur votre home pour monter le répertoire partagé du dataset;
+
+Utiliser des données par le réseau n'est pas l'idéal parce que c'est
+lent et ça encombre le réseau; Il reste disons 80 Go d'espace disque
+libre en local sur les disques SSD des machines GPU; Comme vous
+n'utiliserez dans un premier temps qu'une partie des images, il serait
+opportun de copier les images d'intérêt localement sur les machines.
+
+******************************************************************************
+
+Suite à une remarque de Quentin/Titouan, un petit erratum à mon mail précédent :
+
+au lieu de ce que je vous avais donné, ajoutez dans votre .bashrc :
+
+export PATH=$PATH:/usr/local/bin:/opt/cuda/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/cuda/lib64:/opt/cudnn-6.5-linux-x64-v2
+export CAFFE_ROOT=/opt/caffe/distribute
+export PYTHONPATH=$CAFFE_ROOT/python:$PYTHONPATH
+export PATH=$PATH:$CAFFE_ROOT/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CAFFE_ROOT/lib
+
+
+par ailleurs, j'ai créé un group deepnet sur les machines GPU auquel je vous ai ajouté; Vous devriez donc pouvoir exécuter :
+
+cd /opt/caffe
+./examples/mnist/train_lenet.sh
+
+et puis en fait, je vous ai carrément ajouté aux sudo ; 
+Attention à ne pas faire d'upgrade trop précipité, si la version du noyau est mise à jour, il faut recompiler les drivers nvidia cuda sans quoi la machine ne boot plus.
+
+Par ailleurs, pour l'interface en ligne de commande de caffe, les tutos parlent du binaire caffe , il faut en fait utiliser caffe.bin
+

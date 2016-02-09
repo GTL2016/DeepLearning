@@ -1,0 +1,9 @@
+images stockées dans /eleves/cei/VBags
+
+Et ce partage est accessible sur gamin.metz.supelec.fr et vous devriez tous y avoir accès en lecture/écriture avec votre login habituel.
+
+Par exemple sous linux :
+
+mkdir monrepertoirebidon
+sshfs monlogin@gamin.metz.supelec.fr:/eleves/cei monrepertoirebidonls monrepertoirebidon
+
