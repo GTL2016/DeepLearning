@@ -7,6 +7,7 @@ from PIL import Image
 from skimage.transform import resize
 import skimage.io
 import shutil
+import os
 
 interp_order = 1
 
@@ -17,15 +18,11 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 
 	data = sys.argv[1]+'.txt'
 	lmdb_data_name = sys.argv[1]+'_data_lmdb'
-	lmdb_label1_name = sys.argv[1]+'_score_lmdb_1'
-	lmdb_label2_name = sys.argv[1]+'_score_lmdb_2'
-	lmdb_label3_name = sys.argv[1]+'_score_lmdb_3'
+	lmdb_label_name = sys.argv[1]+'_score_lmdb'
 	
-	shutil.rmtree(lmdb_label1_name)
-	shutil.rmtree(lmdb_label2_name)
-	shutil.rmtree(lmdb_label3_name)
-	shutil.rmtree(lmdb_data_name)
-
+	#shutil.rmtree(lmdb_label_name)
+	#shutil.rmtree(lmdb_data_name)
+	
 	Inputs = []
 	Label1 = []
 	Label2 = []
@@ -40,49 +37,17 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 		Label3.append(entries[3])
 	finput.close()
 
-	print('Writing label 1')
+	print('Writing labels')
 
 	# Size of buffer: 1000 elements to reduce memory consumption
 	for idx in range(int(math.ceil(len(Label1)/1000.0))):
-		in_db_label = lmdb.open(lmdb_label1_name, map_size=int(1e12))
+		in_db_label = lmdb.open(lmdb_label_name, map_size=int(1e12))
 		with in_db_label.begin(write=True) as in_txn:
 			for label_idx, label_ in enumerate(Label1[(1000*idx):(1000*(idx+1))]):
-				im_dat = caffe.io.array_to_datum(np.array(label_).astype(float).reshape(1,1,1))
+				im_dat = caffe.io.array_to_datum(np.array([label_,Label2[label_idx],Label3[label_idx]]).astype(float).reshape(3,1,1))
 				in_txn.put('{:0>10d}'.format(1000*idx + label_idx), im_dat.SerializeToString())
 
 				string_ = str(1000*idx+label_idx+1) + ' / ' + str(len(Label1))
-				sys.stdout.write("\r%s" % string_)
-				sys.stdout.flush()
-		in_db_label.close()
-	print('')
-
-	print('Writing label 2')
-
-	# Size of buffer: 1000 elements to reduce memory consumption
-	for idx in range(int(math.ceil(len(Label2)/1000.0))):
-		in_db_label = lmdb.open(lmdb_label2_name, map_size=int(1e12))
-		with in_db_label.begin(write=True) as in_txn:
-			for label_idx, label_ in enumerate(Label2[(1000*idx):(1000*(idx+1))]):
-				im_dat = caffe.io.array_to_datum(np.array(label_).astype(float).reshape(1,1,1))
-				in_txn.put('{:0>10d}'.format(1000*idx + label_idx), im_dat.SerializeToString())
-
-				string_ = str(1000*idx+label_idx+1) + ' / ' + str(len(Label2))
-				sys.stdout.write("\r%s" % string_)
-				sys.stdout.flush()
-		in_db_label.close()
-	print('')
-
-	print('Writing label 3')
-
-	# Size of buffer: 1000 elements to reduce memory consumption
-	for idx in range(int(math.ceil(len(Label3)/1000.0))):
-		in_db_label = lmdb.open(lmdb_label3_name, map_size=int(1e12))
-		with in_db_label.begin(write=True) as in_txn:
-			for label_idx, label_ in enumerate(Label3[(1000*idx):(1000*(idx+1))]):
-				im_dat = caffe.io.array_to_datum(np.array(label_).astype(float).reshape(1,1,1))
-				in_txn.put('{:0>10d}'.format(1000*idx + label_idx), im_dat.SerializeToString())
-
-				string_ = str(1000*idx+label_idx+1) + ' / ' + str(len(Label3))
 				sys.stdout.write("\r%s" % string_)
 				sys.stdout.flush()
 		in_db_label.close()
