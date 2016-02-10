@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import sys
+import os
 
 pathtoimages = "nopath";
 if sys.argv[1]=='supelec':
@@ -20,6 +21,9 @@ if pathtoimages !="nopath":
 
 	print("writing training document")
 	t=open("train.txt","w")
+	if (os.stat("train.txt").st_size != 0):
+		os.remove('train.txt')
+		t=open("train.txt","w")
 	for date in train_date:
 		print date
 		path=pathtoimages+date
@@ -51,6 +55,9 @@ if pathtoimages !="nopath":
 
 	print("writing validation document")
 	t=open("val.txt","w")
+	if (os.stat("val.txt").st_size != 0):
+		os.remove('val.txt')
+		t=open("val.txt","w")
 	for date in val_date:
 		print date
 		path=pathtoimages+date
