@@ -1,8 +1,11 @@
 import numpy as np
 import math
+import sys
 
 
-pathtofile ="/home/yr/Documents/Project/"
+#pathtofile ="/home/yr/Documents/Project/"
+pathtoimages = sys.argv[1];
+print(pathtoimages)
 train_date=["150505"]
 val_date=["150522"]
 
@@ -15,7 +18,7 @@ print("writing training document")
 t=open("train.txt","w")
 for date in train_date:
 	print date
-	path="images/VBags/"+date
+	path=pathtoimages+date
 
 	f=open(path+"/image_auxilliary.csv","r")
 	l = f.readlines()
@@ -37,7 +40,7 @@ for date in train_date:
 				else:
 					index=str(nb%1000)  
 			
-			t.write(pathtofile+path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
+			t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
 	f.close()
 	print "fin "+date
 t.close()
@@ -46,7 +49,7 @@ print("writing validation document")
 t=open("val.txt","w")
 for date in val_date:
 	print date
-	path="images/VBags/"+date
+	path=pathtoimages+date
 
 	f=open(path+"/image_auxilliary.csv","r")
 	l = f.readlines()
@@ -68,7 +71,7 @@ for date in val_date:
 				else:
 					index=str(nb%1000)  
 			
-			t.write(pathtofile+path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
+			t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
 	f.close()
 	print "fin "+date
 t.close()
