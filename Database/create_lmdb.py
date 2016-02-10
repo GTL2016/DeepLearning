@@ -20,8 +20,10 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 	lmdb_data_name = sys.argv[1]+'_data_lmdb'
 	lmdb_label_name = sys.argv[1]+'_score_lmdb'
 	
-	#shutil.rmtree(lmdb_label_name)
-	#shutil.rmtree(lmdb_data_name)
+	if (os.path.exists(lmdb_label_name)):
+		shutil.rmtree(lmdb_label_name)
+	if (os.path.exists(lmdb_data_name)):
+		shutil.rmtree(lmdb_data_name)
 	
 	Inputs = []
 	Label1 = []
