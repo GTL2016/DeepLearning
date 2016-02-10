@@ -6,18 +6,25 @@ import sys
 from PIL import Image
 from skimage.transform import resize
 import skimage.io
+import shutil
 
 interp_order = 1
 
-if (len(sys.argv)==1 or len(sys.argv)==3):
+if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv[1]=='val')):
 	# Command line to check created files:
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/train_score_lmdb/
+	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/val_score_lmdb/
 
-	data = 'train.txt'
-	lmdb_data_name = 'train_data_lmdb'
-	lmdb_label1_name = 'train_score_lmdb_1'
-	lmdb_label2_name = 'train_score_lmdb_2'
-	lmdb_label3_name = 'train_score_lmdb_3'
+	data = sys.argv[1]+'.txt'
+	lmdb_data_name = sys.argv[1]+'_data_lmdb'
+	lmdb_label1_name = sys.argv[1]+'_score_lmdb_1'
+	lmdb_label2_name = sys.argv[1]+'_score_lmdb_2'
+	lmdb_label3_name = sys.argv[1]+'_score_lmdb_3'
+	
+	shutil.rmtree(lmdb_label1_name)
+	shutil.rmtree(lmdb_label2_name)
+	shutil.rmtree(lmdb_label3_name)
+	shutil.rmtree(lmdb_data_name)
 
 	Inputs = []
 	Label1 = []
@@ -89,13 +96,13 @@ if (len(sys.argv)==1 or len(sys.argv)==3):
 			for in_idx, in_ in enumerate(Inputs[(1000*idx):(1000*(idx+1))]):
 				im = caffe.io.load_image(in_)
 				
-				if len(sys.argv)==3:
+				if len(sys.argv)==4:
 					im_min, im_max = im.min(), im.max()
 					if im_max > im_min:
 						# skimage is fast but only understands {1,3} channel images
 						# in [0, 1].
 						im_std = (im - im_min) / (im_max - im_min)
-						resized_std = resize(im_std, (float(sys.argv[1]),float(sys.argv[2])), order=interp_order)
+						resized_std = resize(im_std, (float(sys.argv[2]),float(sys.argv[3])), order=interp_order)
 						resized_im = resized_std * (im_max - im_min) + im_min
 						resized_im.astype(np.float32)
 					else:
@@ -113,5 +120,5 @@ if (len(sys.argv)==1 or len(sys.argv)==3):
 		in_db_data.close()
 	print('')
 else:
-	print('Incorrect number of parameter');
-	print('Either give no parameter to keep the size of the images or the new height and width');
+	print('Incorrect number of parameter or wrong train/val mode');
+	print('Usage: First argument=<train or val mode> Second Argument(optional)= <New height> Third Argument(optional)=<New width>');
