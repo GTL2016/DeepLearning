@@ -7,7 +7,8 @@ from PIL import Image
 from skimage.transform import resize
 import skimage.io
 
-print(len(sys.argv))
+interp_order = 1
+
 if (len(sys.argv)==1 or len(sys.argv)==3):
 	# Command line to check created files:
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/train_score_lmdb/
@@ -94,7 +95,7 @@ if (len(sys.argv)==1 or len(sys.argv)==3):
 						# skimage is fast but only understands {1,3} channel images
 						# in [0, 1].
 						im_std = (im - im_min) / (im_max - im_min)
-						resized_std = resize(im_std, new_dims, order=interp_order)
+						resized_std = resize(im_std, (float(sys.argv[1]),float(sys.argv[2])), order=interp_order)
 						resized_im = resized_std * (im_max - im_min) + im_min
 						resized_im.astype(np.float32)
 					else:
