@@ -4,7 +4,7 @@ import sys
 
 pathtoimages = "nopath";
 if sys.argv[1]=='supelec':
-	pathtoimages = "/data/cei/Vbags/"
+	pathtoimages = "/data/cei/VBags/"
 elif sys.argv[1]=='gtl':
 	pathtoimages = "/mnt/tale/"
 
