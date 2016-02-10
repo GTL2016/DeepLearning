@@ -8,7 +8,7 @@ from skimage.transform import resize
 import skimage.io
 
 print(len(sys.argv))
-if (len(sys.argv)==1 | len(sys.argv)==3):
+if (len(sys.argv)==1 or len(sys.argv)==3):
 	# Command line to check created files:
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/train_score_lmdb/
 
