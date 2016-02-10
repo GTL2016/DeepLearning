@@ -12,7 +12,7 @@ if (len(sys.argv)==1 or len(sys.argv)==3):
 	# Command line to check created files:
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/train_score_lmdb/
 
-	data = '/home/yr/Documents/Project/train.txt'
+	data = 'train.txt'
 	lmdb_data_name = 'train_data_lmdb'
 	lmdb_label1_name = 'train_score_lmdb_1'
 	lmdb_label2_name = 'train_score_lmdb_2'
