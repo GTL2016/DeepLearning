@@ -72,6 +72,7 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 						resized_std = resize(im_std, (float(sys.argv[2]),float(sys.argv[3])), order=interp_order)
 						resized_im = resized_std * (im_max - im_min) + im_min
 						resized_im.astype(np.float32)
+						im = resized_im
 					else:
 						ret = np.empty((new_dims[0], new_dims[1], im.shape[-1]),
 						dtype=np.float32)
