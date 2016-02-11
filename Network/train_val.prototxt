@@ -12,7 +12,7 @@ layer {
     mean_file: "../Database/mean.binaryproto"
   }
   data_param {
-    source: "../Database/lmdb_train_data"
+    source: "../Database/train_data_lmdb"
     batch_size: 100
     backend: LMDB
   }
@@ -26,7 +26,7 @@ layer {
     phase: TRAIN
   }
   data_param {
-    source: "../Database/lmdb_train_label"
+    source: "../Database/train_label_lmdb"
     batch_size: 100
     backend: LMDB
   }
@@ -45,7 +45,7 @@ layer {
     mean_file: "../Database/mean.binaryproto"
   }
   data_param {
-    source: "../Database/lmdb_test_data"
+    source: "../Database/val_data_lmdb"
     batch_size: 100
     backend: LMDB
   }
@@ -59,15 +59,11 @@ layer {
     phase: TRAIN
   }
   data_param {
-    source: "../Database/lmdb_test_label"
+    source: "../Database/val_label_lmdb"
     batch_size: 100
     backend: LMDB
   }
 }
-
-
-
-
 
 layer {
   name: "conv1"
@@ -372,6 +368,7 @@ layer {
     dropout_ratio: 0.5
   }
 }
+
 layer {
   name: "fc8"
   type: "InnerProduct"
