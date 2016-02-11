@@ -1,4 +1,6 @@
 name: "TestNet"
+#image/labels layers for training
+#input layer
 layer {
   name: "images"
   type: "Data"
@@ -7,55 +9,66 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    mirror: true
-    crop_size: 227
-    mean_file: "mean_file: "../Database/mean.binaryproto""
+    mean_file: "../Database/train_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: true
-#  }
   data_param {
-    source: "examples/imagenet/ilsvrc12_train_lmdb"
-    batch_size: 256
+    source: "../Database/train_data_lmdb"
+    batch_size: 100
     backend: LMDB
   }
 }
+#labels layer
 layer {
-  name: "data"
+  name: "labels"
   type: "Data"
-  top: "data"
-  top: "label"
+  top: "labels"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "../Database/train_label_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+
+
+# Now for the test
+layer {
+  name: "images"
+  type: "Data"
+  top: "images"
   include {
     phase: TEST
   }
   transform_param {
-    mirror: false
-    crop_size: 227
-    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "../Database/val_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: false
-#  }
   data_param {
-    source: "examples/imagenet/ilsvrc12_val_lmdb"
-    batch_size: 50
+    source: "../Database/val_data_lmdb"
+    batch_size: 100
     backend: LMDB
   }
 }
+#labels layer
+layer {
+  name: "labels"
+  type: "Data"
+  top: "labels"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "../Database/val_label_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+
 layer {
   name: "conv1"
   type: "Convolution"
-  bottom: "data"
+  bottom: "images"
   top: "conv1"
   param {
     lr_mult: 1
@@ -355,6 +368,7 @@ layer {
     dropout_ratio: 0.5
   }
 }
+
 layer {
   name: "fc8"
   type: "InnerProduct"
@@ -369,7 +383,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 1000
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -384,7 +398,7 @@ layer {
   name: "accuracy"
   type: "Accuracy"
   bottom: "fc8"
-  bottom: "label"
+  bottom: "labels"
   top: "accuracy"
   include {
     phase: TEST
@@ -392,8 +406,8 @@ layer {
 }
 layer {
   name: "loss"
-  type: "SoftmaxWithLoss"
+  type: "EuclideanLossLayer"
   bottom: "fc8"
-  bottom: "label"
+  bottom: "labels"
   top: "loss"
 }
