@@ -406,7 +406,7 @@ layer {
 }
 layer {
   name: "loss"
-  type: "EuclideanLossLayer"
+  type: "EuclideanLoss"
   bottom: "fc8"
   bottom: "labels"
   top: "loss"
