@@ -18,7 +18,7 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 
 	data = sys.argv[1]+'.txt'
 	lmdb_data_name = sys.argv[1]+'_data_lmdb'
-	lmdb_label_name = sys.argv[1]+'_score_lmdb'
+	lmdb_label_name = sys.argv[1]+'_label_lmdb'
 	
 	if (os.path.exists(lmdb_label_name)):
 		shutil.rmtree(lmdb_label_name)
