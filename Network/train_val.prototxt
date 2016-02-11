@@ -13,7 +13,7 @@ layer {
   }
   data_param {
     source: "../Database/train_data_lmdb"
-    batch_size: 10
+    batch_size: 1
     backend: LMDB
   }
 }
@@ -27,7 +27,7 @@ layer {
   }
   data_param {
     source: "../Database/train_label_lmdb"
-    batch_size: 10
+    batch_size: 1
     backend: LMDB
   }
 }
@@ -46,7 +46,7 @@ layer {
   }
   data_param {
     source: "../Database/val_data_lmdb"
-    batch_size:10
+    batch_size:1
     backend: LMDB
   }
 }
@@ -60,7 +60,7 @@ layer {
   }
   data_param {
     source: "../Database/val_label_lmdb"
-    batch_size: 10
+    batch_size: 1
     backend: LMDB
   }
 }
@@ -395,16 +395,16 @@ layer {
   }
 }
 
-//layer {
-//  name: "accuracy"
-//  type: "Accuracy"
-//  bottom: "fc8"
-//  bottom: "labels"
-//  top: "accuracy"
-//  include {
-//    phase: TEST
-//  }
-//}
+#layer {
+#  name: "accuracy"
+#  type: "Accuracy"
+#  bottom: "fc8"
+#  bottom: "labels"
+#  top: "accuracy"
+#  include {
+#    phase: TEST
+#  }
+#}
 
 layer {
   name: "loss"
