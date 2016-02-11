@@ -394,16 +394,18 @@ layer {
     }
   }
 }
-layer {
-  name: "accuracy"
-  type: "Accuracy"
-  bottom: "fc8"
-  bottom: "labels"
-  top: "accuracy"
-  include {
-    phase: TEST
-  }
-}
+
+//layer {
+//  name: "accuracy"
+//  type: "Accuracy"
+//  bottom: "fc8"
+//  bottom: "labels"
+//  top: "accuracy"
+//  include {
+//    phase: TEST
+//  }
+//}
+
 layer {
   name: "loss"
   type: "EuclideanLoss"
