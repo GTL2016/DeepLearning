@@ -34,7 +34,7 @@ if pathtoimages !="nopath":
 
 		
 		for s in L:
-			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])-float(s[5])>math.pi/3)&(float(s[4])-float(s[5])<(math.pi/3)+(math.pi/180)):
+			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])+float(s[5])>math.pi/3)&(float(s[4])+float(s[5])<(math.pi/3)+(math.pi/180)):
 				nb=int(float(s[1]))
 				if nb/1000<10:
 					tag="0"+str(nb/1000)
@@ -47,8 +47,8 @@ if pathtoimages !="nopath":
 						index="0"+str(nb%1000)
 					else:
 						index=str(nb%1000)  
-				
-				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
+				angle = float(s[4])+float(s[5])
+				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+angle+"\n")
 		f.close()
 		print "fin "+date
 	t.close()
@@ -68,7 +68,7 @@ if pathtoimages !="nopath":
 
 		
 		for s in L:
-			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])-float(s[5])>math.pi/3)&(float(s[4])-float(s[5])<(math.pi/3)+(math.pi/180)):
+			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])+float(s[5])>math.pi/3)&(float(s[4])+float(s[5])<(math.pi/3)+(math.pi/180)):
 				nb=int(float(s[1]))
 				if nb/1000<10:
 					tag="0"+str(nb/1000)
@@ -81,8 +81,8 @@ if pathtoimages !="nopath":
 						index="0"+str(nb%1000)
 					else:
 						index=str(nb%1000)  
-				
-				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+s[4]+"\n")
+				angle = float(s[4])+float(s[5])
+				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+angle+"\n")
 		f.close()
 		print "fin "+date
 	t.close()
