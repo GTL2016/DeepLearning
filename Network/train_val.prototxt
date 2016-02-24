@@ -9,7 +9,7 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    mean_file: "../Database/train_mean.binaryproto"
+    mean_file: "../Database/train_data_mean.binaryproto"
   }
   data_param {
     source: "../Database/train_data_lmdb"
@@ -24,6 +24,9 @@ layer {
   top: "labels"
   include {
     phase: TRAIN
+  }
+  transform_param {
+    mean_file: "../Database/train_label_mean.binaryproto"
   }
   data_param {
     source: "../Database/train_label_lmdb"
@@ -42,7 +45,7 @@ layer {
     phase: TEST
   }
   transform_param {
-    mean_file: "../Database/val_mean.binaryproto"
+    mean_file: "../Database/val_data_mean.binaryproto"
   }
   data_param {
     source: "../Database/val_data_lmdb"
@@ -57,6 +60,9 @@ layer {
   top: "labels"
   include {
     phase: TEST
+  }
+  transform_param {
+    mean_file: "../Database/val_label_mean.binaryproto"
   }
   data_param {
     source: "../Database/val_label_lmdb"
