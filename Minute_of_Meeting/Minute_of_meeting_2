@@ -1,0 +1,5 @@
+1. Faire une loss dans R4 avec segments entre robot et le bord du lac. Distance robot-lac constante égale à 10 m.
+2. Soustraire la moyenne aux longitudes et latitudes pour centrer les distances en 0.
+3. A faire:
+	- Changer make mean pour faire seulement moyenne de x et y.
+	- Changer la loss pour calculer les deux segments puis faire l'erreur avec la norme L1 ou L2 sur R4.
