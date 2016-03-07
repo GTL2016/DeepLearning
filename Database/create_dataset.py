@@ -48,7 +48,9 @@ if pathtoimages !="nopath":
 					else:
 						index=str(nb%1000)  
 				angle = float(s[4])-float(s[5])
-				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(angle)+"\n")
+				proj_x = float(s[2])+math.cos(angle)*10;
+				proj_y = float(s[3])+math.sin(angle)*10;
+				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
 		f.close()
 		print "fin "+date
 	t.close()
@@ -82,7 +84,9 @@ if pathtoimages !="nopath":
 					else:
 						index=str(nb%1000)  
 				angle = float(s[4])-float(s[5])
-				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(angle)+"\n")
+				proj_x = float(s[2])+math.cos(angle)*10;
+				proj_y = float(s[3])+math.sin(angle)*10;
+				t.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
 		f.close()
 		print "fin "+date
 	t.close()
