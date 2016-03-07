@@ -48,7 +48,7 @@ if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv
 		in_db_label = lmdb.open(lmdb_label_name, map_size=int(1e12))
 		with in_db_label.begin(write=True) as in_txn:
 			for label_idx, label_ in enumerate(Label1[(1000*idx):(1000*(idx+1))]):
-				im_dat = caffe.io.array_to_datum(np.array([label_,Label2[label_idx],Label3[label_idx],Label4[label_idx]]).astype(float).reshape(3,1,1))
+				im_dat = caffe.io.array_to_datum(np.array([label_,Label2[label_idx],Label3[label_idx],Label4[label_idx]]).astype(float).reshape(4,1,1))
 				in_txn.put('{:0>10d}'.format(1000*idx + label_idx), im_dat.SerializeToString())
 
 				string_ = str(1000*idx+label_idx+1) + ' / ' + str(len(Label1))
