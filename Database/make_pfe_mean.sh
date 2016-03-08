@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
 DATA=./
-TOOLS=$CAFFE_ROOT/../tools
 
 $TOOLS/compute_image_mean $DATA/train_data_lmdb \
   $DATA/train_data_mean.binaryproto
