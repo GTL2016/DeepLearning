@@ -11,4 +11,4 @@ display: 1
 max_iter: 1       # train for 350K iterations total
 snapshot: 10        # snapshot intermediate results
 snapshot_prefix: "./"
-solver_mode: CPU
+solver_mode: GPU

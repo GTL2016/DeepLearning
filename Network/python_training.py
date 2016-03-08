@@ -21,11 +21,11 @@ solver.net.forward()
 solver.test_nets[0].forward()
 # we use a little trick to tile the first image (mosaique des images si batch size > 1)
 figure(1)
-imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(210, 352),cmap='gray')
+imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352),cmap='gray')
 show()
 print solver.net.blobs['labels'].data[:1]
 figure(2)
-imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(210,352),cmap='gray')
+imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
 show()
 print solver.test_nets[0].blobs['labels'].data[:1]
 solver.step(1)
