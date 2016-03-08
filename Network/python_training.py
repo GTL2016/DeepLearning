@@ -30,6 +30,21 @@ figure(2)
 imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
 show()
 print solver.test_nets[0].blobs['labels'].data[:1]
+
+# conv1 layer before iterations begin
 solver.step(1)
-#cv1 = solver.net.params['conv1'][0].diff[:, 0].reshape(4, 5, 5, 5).transpose(0, 2, 1, 3).reshape(4*5, 5*5)
-#imshow(cv1,cmap='gray')
+figure(3)
+imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+show()
+
+# Iterations to display conv 1 layer
+solver.step(1)
+figure(4)
+imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+show()
+
+for i in range(10):
+	solver.step(1)
+figure(5)
+imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+show()
