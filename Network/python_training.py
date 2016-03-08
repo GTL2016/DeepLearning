@@ -8,8 +8,10 @@ import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
-
-caffe.set_mode_cpu()
+if sys.argv[1]=='cpu':
+	caffe.set_mode_cpu()
+elif sys.argv[1]=='gpu':
+	caffe.set_mode_gpu()
 solver = caffe.SGDSolver('solver.prototxt')
 # each output is (batch size, feature dim, spatial dim)
 a = [(k, v.data.shape) for k, v in solver.net.blobs.items()]
