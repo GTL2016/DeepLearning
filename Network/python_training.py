@@ -29,4 +29,5 @@ imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshap
 show()
 print solver.test_nets[0].blobs['labels'].data[:1]
 solver.step(1)
-#imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(4, 5, 5, 5).transpose(0, 2, 1, 3).reshape(4*5, 5*5), cmap='gray')
+#cv1 = solver.net.params['conv1'][0].diff[:, 0].reshape(4, 5, 5, 5).transpose(0, 2, 1, 3).reshape(4*5, 5*5)
+#imshow(cv1,cmap='gray')
