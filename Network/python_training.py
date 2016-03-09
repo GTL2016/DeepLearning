@@ -32,7 +32,6 @@ show()
 print solver.test_nets[0].blobs['labels'].data[:1]
 
 # plotting conv1 layer before iterations begin
-solver.step(1)
 figure(3)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
@@ -42,6 +41,8 @@ solver.step(1)
 figure(4)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
+feature1 = solver.test_nets[0].blobs['conv1'].data[:].shape
+print(feature1)
 
 # # 10 iterations to display conv 1
 #for i in range(10):
@@ -50,7 +51,7 @@ show()
 #imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 #show()
 
-max_iter = 50
+max_iter = 200
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
