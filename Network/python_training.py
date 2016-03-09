@@ -41,8 +41,9 @@ solver.step(1)
 figure(4)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
-feature1 = solver.test_nets[0].blobs['conv1'].data[:].shape
-print(feature1)
+figure(5)
+imshow(solver.test_nets[0].blobs['pool5'].data[:30,0].reshape(30,7*10),cmap='gray')
+show()
 
 # # 10 iterations to display conv 1
 #for i in range(10):
@@ -74,7 +75,7 @@ for it in range(max_iter):
 			solver.test_nets[0].forward()
 
 # Display conv1 layer after max_iter iterations:
-figure(5)
+figure(6)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
 
