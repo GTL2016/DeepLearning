@@ -1,2 +1,2 @@
-$CAFFE_ROOT/../build/tools/caffe train --solver=solver.prototxt
+$TOOLS/caffe train --solver=solver.prototxt
 
