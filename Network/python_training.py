@@ -78,6 +78,12 @@ for it in range(max_iter):
 			correct += sum(solver.test_nets[0].blobs['fc8'].data.argmax(1)== solver.test_nets[0].blobs['labels'].data
 		test_acc[it // test_interval] = correct / 1e4
 
+# Display conv1 layer after max_iter iterations:
+solver.step(1)
+figure(5)
+imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+show()
+
 # Plotting loss and accuracy
 _, ax1 = subplots()
 ax2 = ax1.twinx()
