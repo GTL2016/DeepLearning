@@ -50,7 +50,7 @@ show()
 #imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 #show()
 
-max_iter = 200
+max_iter = 50
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -71,31 +71,27 @@ for it in range(max_iter):
 		correct = 0
 		for test_it in range(100):
 			solver.test_nets[0].forward()
-			#correct += sum(solver.test_nets[0].blobs['fc8'].data.argmax(1) == solver.test_nets[0].blobs['labels'].data
-		##test_acc[it // test_interval] = correct / 1e4
 
 # Display conv1 layer after max_iter iterations:
 figure(5)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
 
-## Plotting loss and accuracy
+## Plotting loss 
+#figure(6)
 #_, ax1 = subplots()
-#ax2 = ax1.twinx()
-#ax1.plot(arange(niter), train_loss)
-#ax2.plot(test_interval * arange(len(test_acc)), test_acc, 'r')
+#ax1.plot(arange(max_iter), train_loss)
 #ax1.set_xlabel('iteration')
 #ax1.set_ylabel('train loss')
-#ax2.set_ylabel('test accuracy')
 
 ## Plotting output and found label along iterations
-##for i in range(8):
-    ##figure(figsize=(2, 2))
-    ##imshow(solver.test_nets[0].blobs['data'].data[i, 0], cmap='gray')
-    ##figure(figsize=(10, 2))
-    ##imshow(output[:50, i].T, interpolation='nearest', cmap='gray')
-    ##xlabel('iteration')
-    ##ylabel('label')
+#for i in range(8):
+    #figure(figsize=(2, 2))
+    #imshow(solver.test_nets[0].blobs['images'].data[i, 0], cmap='gray')
+    #figure(figsize=(4, 2))
+    #imshow(output[:50, i].T, interpolation='nearest', cmap='gray')
+    #xlabel('iteration')
+    #ylabel('label')
 
 ##for i in range(8):
     ##figure(figsize=(2, 2))
