@@ -49,7 +49,7 @@ layer {
   }
   data_param {
     source: "../Database/val_data_lmdb"
-    batch_size:72
+    batch_size:5
     backend: LMDB
   }
 }
@@ -66,7 +66,7 @@ layer {
   }
   data_param {
     source: "../Database/val_label_lmdb"
-    batch_size: 72
+    batch_size: 5
     backend: LMDB
   }
 }

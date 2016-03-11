@@ -42,7 +42,7 @@ figure(4)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 show()
 figure(5)
-imshow(solver.test_nets[0].blobs['pool5'].data[:30,0].reshape(30,7*10),cmap='gray')
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 show()
 
 # # 10 iterations to display conv 1

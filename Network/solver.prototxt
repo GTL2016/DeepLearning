@@ -1,5 +1,5 @@
 net: "./train_val.prototxt"
-test_iter: 7        # specifies how many forward passes the test should carry out: batch size x test iterations = nb of testing images
+test_iter: 5        # specifies how many forward passes the test should carry out: batch size x test iterations = nb of testing images
 test_interval: 25     # Carry out testing every "test_interval" training iterations.
 base_lr: 1e-05            # begin training at a learning rate of 0
 momentum: 0.0
