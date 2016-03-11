@@ -102,3 +102,10 @@ show()
     ##imshow(exp(output[:50, i].T) / exp(output[:50, i].T).sum(0), interpolation='nearest', cmap='gray')
     ##xlabel('iteration')
     ##ylabel('label')
+
+# plt.figure()
+# plt.subplot(1,3,1)
+# plt.imshow()
+# plt.subplot(1,3,2)
+# plt.imshow()
+
