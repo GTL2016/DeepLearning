@@ -71,6 +71,8 @@ scatter(labels_in[:,0],labels_in[:,1],s=25,c='g',marker='+')
 scatter(labels_in[:,2],labels_in[:,3],s=25,c='r',marker='+')
 scatter(labels_out[:,0],labels_out[:,1],s=25,c='b',marker='+')
 scatter(labels_out[:,2],labels_out[:,3],s=25,c='m',marker='+')
+quiver(labels_in[:,0],labels_in[:,1],labels_in[:,2]-labels_in[:,0],labels_in[:,3]-labels_in[:,1],color='g')
+quiver(labels_out[:,0],labels_out[:,1],labels_out[:,2]-labels_out[:,0],labels_out[:,3]-labels_out[:,1],color='r')
 # Show all figures
 show()
 
