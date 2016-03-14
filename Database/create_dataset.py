@@ -68,12 +68,10 @@ if pathtoimages !="nopath":
 				
 				if (index_sample % 5 == 0):
 					number_test = number_test +1
-					print "writing test data"
 					# ecriture du dataset test
 					t2.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
 				else:
 					number_train = number_train +1
-					print "writing train data"
 					# ecriture du dataset train
 					t1.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
 		f.close()
