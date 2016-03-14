@@ -37,7 +37,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
-max_iter = 200
+max_iter = 1000
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -62,6 +62,8 @@ for it in range(max_iter):
 # Display conv1 layer after max_iter iterations:
 figure(5)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+figure(6)
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 show()
 
 ## Plotting loss 
