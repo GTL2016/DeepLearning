@@ -32,6 +32,8 @@ if pathtoimages !="nopath":
 		t2=open("val.txt","w")
 	
 	index_sample = 0
+	number_test = 0
+	number_train = 0
 	for date in train_date:
 		print date
 		path=pathtoimages+date
@@ -48,8 +50,6 @@ if pathtoimages !="nopath":
 			# s[2] correspond a x, superieur a 296921 partie sud du lac evitee pour probleme d'initialisation et de retour a la base
 			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])-float(s[5])>math.pi/3)&(float(s[4])-float(s[5])<(math.pi/3)+(15*math.pi/180))&(float(s[2])>296921):
 				index_sample = index_sample + 1
-				print float(s[2])
-				print index_sample
 				nb=int(float(s[1]))
 				if nb/1000<10:
 					tag="0"+str(nb/1000)
@@ -67,10 +67,12 @@ if pathtoimages !="nopath":
 				proj_y = float(s[3])+math.sin(angle)*10;
 				
 				if (index_sample % 5 == 0):
+					number_test = number_test +1
 					print "writing test data"
 					# ecriture du dataset test
 					t2.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
 				else:
+					number_train = number_train +1
 					print "writing train data"
 					# ecriture du dataset train
 					t1.write(path+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
@@ -78,5 +80,9 @@ if pathtoimages !="nopath":
 		print "fin "+date
 	t1.close()
 	t2.close()
+	print "Total number of inputs = "+str(index_sample)
+	print "Train dataset = "+number_train
+	print "Test dataset = "+number_test
+	
 else:
 	print('Please state which machine you are using (gtl or supelec)')	
