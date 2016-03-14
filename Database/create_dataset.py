@@ -81,8 +81,8 @@ if pathtoimages !="nopath":
 	t1.close()
 	t2.close()
 	print "Total number of inputs = "+str(index_sample)
-	print "Train dataset = "+number_train
-	print "Test dataset = "+number_test
+	print "Train dataset = "+str(number_train)
+	print "Test dataset = "+str(number_test)
 	
 else:
 	print('Please state which machine you are using (gtl or supelec)')	
