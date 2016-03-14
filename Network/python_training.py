@@ -24,10 +24,8 @@ solver.test_nets[0].forward()
 # we use a little trick to tile the first image (mosaique des images si batch size > 1)
 figure(1)
 imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352),cmap='gray')
-print solver.net.blobs['labels'].data[:1]
 figure(2)
 imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
-print solver.test_nets[0].blobs['labels'].data[:1]
 
 # 1 Iteration to display conv 1 layer
 solver.step(1)
@@ -37,7 +35,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
-max_iter = 1000
+max_iter = 100
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -64,6 +62,14 @@ figure(5)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 figure(6)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
+
+# Plotting position and predicted position
+figure(7)
+labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+a = 1
+scatter(labels[:,0],labels[:,1],a,'g')
+scatter(labels[:,2],labels[:,3],a,'r')
+# Show all figures
 show()
 
 ## Plotting loss 
@@ -90,9 +96,7 @@ show()
     ##xlabel('iteration')
     ##ylabel('label')
 
-# plt.figure()
-# plt.subplot(1,3,1)
+#subplot(1,3,1)
 # plt.imshow()
 # plt.subplot(1,3,2)
 # plt.imshow()
-
