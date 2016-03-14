@@ -66,9 +66,8 @@ imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 # Plotting position and predicted position
 figure(7)
 labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
-a = 1
-scatter(labels[:,0],labels[:,1],a,'g')
-scatter(labels[:,2],labels[:,3],a,'r')
+scatter(labels[:,0],labels[:,1],s=25,c='g')
+scatter(labels[:,2],labels[:,3],s=25,c='r')
 # Show all figures
 show()
 
