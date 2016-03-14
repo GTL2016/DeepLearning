@@ -10,5 +10,5 @@ stepsize: 100000      # drop the learning rate every stepsize iterations
 display: 1
 max_iter: 200       # train for 350K iterations total
 snapshot: 100        # snapshot intermediate results
-snapshot_prefix: "./"
+snapshot_prefix: "./snap/"
 solver_mode: GPU
