@@ -9,6 +9,6 @@ gamma: 0.1            # drop the learning rate by a factor of 10 : base_lr * gam
 stepsize: 100000      # drop the learning rate every stepsize iterations 
 display: 1
 max_iter: 200       # train for 350K iterations total
-snapshot: 20       # snapshot intermediate results
+snapshot: 25       # snapshot intermediate results
 snapshot_prefix: "./snap/"
 solver_mode: GPU
