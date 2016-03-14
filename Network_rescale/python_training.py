@@ -13,6 +13,10 @@ if sys.argv[1]=='cpu':
 elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 solver = caffe.SGDSolver('solver.prototxt')
+
+scale = 0.000000194325685545
+
+
 # each output is (batch size, feature dim, spatial dim)
 a = [(k, v.data.shape) for k, v in solver.net.blobs.items()]
 print(a)
@@ -35,7 +39,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
-max_iter = 2
+max_iter = 600
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -54,7 +58,7 @@ for it in range(max_iter):
 	if it % test_interval == 0:
 		print 'Iteration', it, 'testing...'
 		correct = 0
-		for test_it in range(100):
+		for test_it in range(5):
 			solver.test_nets[0].forward()
 
 
@@ -80,7 +84,11 @@ scatter(pred[:,2],pred[:,3],s=25,c='m')
 
 # Plotting prediction error for the position X/Y
 figure(8)
-scatter(pred[:,0]-labels[:,0],pred[:,1]-labels[:,1],s=25,c='g')
+for test_it in range(5):
+	solver.test_nets[0].forward()
+	labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+	pred = solver.test_nets[0].blobs['fc8'].data[:]
+	scatter((pred[:,0]-labels[:,0])/scale,(pred[:,1]-labels[:,1])/scale,s=25,c='g')
 
 
 # Show all figures
