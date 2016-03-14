@@ -34,6 +34,10 @@ if pathtoimages !="nopath":
 	index_sample = 0
 	number_test = 0
 	number_train = 0
+	
+	label_min = float('inf')
+	label_max = -float('inf')
+	
 	for date in train_date:
 		print date
 		path=pathtoimages+date
@@ -66,6 +70,9 @@ if pathtoimages !="nopath":
 				proj_x = float(s[2])+math.cos(angle)*10;
 				proj_y = float(s[3])+math.sin(angle)*10;
 				
+				label_max = max(label_max, float(s[2]), float(s[3]), proj_x, proj_y)
+				label_min = min(label_min, float(s[2]), float(s[3]), proj_x, proj_y)
+				
 				if (index_sample % 5 == 0):
 					number_test = number_test +1
 					# ecriture du dataset test
@@ -81,6 +88,7 @@ if pathtoimages !="nopath":
 	print "Total number of inputs = "+str(index_sample)
 	print "Train dataset = "+str(number_train)
 	print "Test dataset = "+str(number_test)
+	print "Scaling factor = "+str(1/(label_max-label_min))
 	
 else:
 	print('Please state which machine you are using (gtl or supelec)')	
