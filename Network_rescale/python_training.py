@@ -7,6 +7,14 @@ from caffe import params as P
 import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+import glob
+
+
+
+
+
+
+
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -16,6 +24,14 @@ solver = caffe.SGDSolver('solver.prototxt')
 
 scale = 0.000000194325685545
 
+# Clearing the snap directory
+directory='./snap'
+os.chdir(directory)
+files=glob.glob('*')
+for filename in files:
+    os.remove(filename)
+
+os.chdir('..')
 
 # each output is (batch size, feature dim, spatial dim)
 a = [(k, v.data.shape) for k, v in solver.net.blobs.items()]
