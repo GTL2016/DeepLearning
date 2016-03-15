@@ -39,7 +39,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
-max_iter = 600
+max_iter = 5
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -72,24 +72,33 @@ imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(
 figure(6)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
-# Plotting position and predicted position
-figure(7)
+solver.test_nets[0].forward()
 labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
 pred = solver.test_nets[0].blobs['fc8'].data[:]
+for test_it in range(4):
+	solver.test_nets[0].forward()
+	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)))
+	pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
+# Taking into account the scaling factor
+labels = labels/scale
+pred = pred/scale
 
-scatter(labels[:,0],labels[:,1],s=25,c='g')
-scatter(labels[:,2],labels[:,3],s=25,c='r')
-scatter(pred[:,0],pred[:,1],s=25,c='b')
-scatter(pred[:,2],pred[:,3],s=25,c='m')
+# Plotting position and predicted position
+figure(7)
+scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
+scatter(labels[:,2],labels[:,3],s=25,c='r',marker='+')
+scatter(pred[:,0],pred[:,1],s=25,c='b',marker='+')
+scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
+quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
+quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
 
 # Plotting prediction error for the position X/Y
 figure(8)
-for test_it in range(5):
-	solver.test_nets[0].forward()
-	labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
-	pred = solver.test_nets[0].blobs['fc8'].data[:]
-	scatter((pred[:,0]-labels[:,0])/scale,(pred[:,1]-labels[:,1])/scale,s=25,c='g')
+scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
 
+# Plotting angle error (histogram)
+figure(9)
+hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
 
 # Show all figures
 show()
