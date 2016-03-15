@@ -10,12 +10,6 @@ import matplotlib.pyplot as plt
 import glob
 
 
-
-
-
-
-
-
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
@@ -55,7 +49,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
-max_iter = 5
+max_iter = 500
 test_interval = 25
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
@@ -77,10 +71,7 @@ for it in range(max_iter):
 		for test_it in range(5):
 			solver.test_nets[0].forward()
 
-
-
 print solver.test_nets[0].blobs['fc8'].data[:].shape
-
 
 # Display conv1 layer after max_iter iterations:
 figure(5)
@@ -116,15 +107,14 @@ scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
 figure(9)
 hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
 
+# Plotting loss 
+figure(10)
+plt.plot(arange(max_iter-50), train_loss[50:])
+plt.xlabel('iteration')
+plt.ylabel('train loss')
+
 # Show all figures
 show()
-
-## Plotting loss 
-#figure(6)
-#_, ax1 = subplots()
-#ax1.plot(arange(max_iter), train_loss)
-#ax1.set_xlabel('iteration')
-#ax1.set_ylabel('train loss')
 
 ## Plotting output and found label along iterations
 #for i in range(8):
