@@ -8,6 +8,8 @@ import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
+scale = 0.000000194325685545
+
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
@@ -35,6 +37,7 @@ figure(4)
 imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Complete training
+test_iter = 5
 max_iter = 100
 test_interval = 25
 # losses will also be stored in the log
@@ -54,7 +57,7 @@ for it in range(max_iter):
 	if it % test_interval == 0:
 		print 'Iteration', it, 'testing...'
 		correct = 0
-		for test_it in range(100):
+		for test_it in range(test_iter):
 			solver.test_nets[0].forward()
 
 # Display conv1 layer after max_iter iterations:
@@ -65,14 +68,25 @@ imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 
 # Plotting position and predicted position
 figure(7)
-labels_in = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
-labels_out = solver.test_nets[0].blobs['fc8'].data[:]
-scatter(labels_in[:,0],labels_in[:,1],s=25,c='g',marker='+')
-scatter(labels_in[:,2],labels_in[:,3],s=25,c='r',marker='+')
-scatter(labels_out[:,0],labels_out[:,1],s=25,c='b',marker='+')
-scatter(labels_out[:,2],labels_out[:,3],s=25,c='m',marker='+')
-quiver(labels_in[:,0],labels_in[:,1],labels_in[:,2]-labels_in[:,0],labels_in[:,3]-labels_in[:,1],color='g')
-quiver(labels_out[:,0],labels_out[:,1],labels_out[:,2]-labels_out[:,0],labels_out[:,3]-labels_out[:,1],color='r')
+for test_it in range(test_iter):
+	solver.test_nets[0].forward()
+	labels_in = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+	labels_out = solver.test_nets[0].blobs['fc8'].data[:]
+	scatter(labels_in[:,0],labels_in[:,1],s=25,c='g',marker='+')
+	scatter(labels_in[:,2],labels_in[:,3],s=25,c='r',marker='+')
+	scatter(labels_out[:,0],labels_out[:,1],s=25,c='b',marker='+')
+	scatter(labels_out[:,2],labels_out[:,3],s=25,c='m',marker='+')
+	quiver(labels_in[:,0],labels_in[:,1],labels_in[:,2]-labels_in[:,0],labels_in[:,3]-labels_in[:,1],color='g')
+	quiver(labels_out[:,0],labels_out[:,1],labels_out[:,2]-labels_out[:,0],labels_out[:,3]-labels_out[:,1],color='r')
+
+# Plotting prediction error for the position X/Y
+figure(8)
+for test_it in range(test_iter):
+	solver.test_nets[0].forward()
+	labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+	pred = solver.test_nets[0].blobs['fc8'].data[:]
+	scatter((pred[:,0]-labels[:,0])/scale,(pred[:,1]-labels[:,1])/scale,s=25,c='g')
+
 # Show all figures
 show()
 
