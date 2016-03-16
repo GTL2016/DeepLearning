@@ -54,7 +54,8 @@ if pathtoimages !="nopath":
 			# s[6] correspond au tilt on veut tilt < 0.21 (ne pas regarder le ciel)
 			# s[4]-s[5] correspond a theta-pan (l angle de vision)
 			# s[2] correspond a x, superieur a 296921 partie sud du lac evitee pour probleme d'initialisation et de retour a la base
-			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])-float(s[5])>math.pi/3)&(float(s[4])-float(s[5])<(math.pi/3)+(15*math.pi/180))&(float(s[2])>296921):
+			# s[15] permet de savoir si l'utilisateur a repris la main sur le robot pour eviter un obstacle
+			if (float(s[5])<1.8)&(float(s[5])>1.5)&(float(s[6])<0.21)&(float(s[4])-float(s[5])>math.pi/3)&(float(s[4])-float(s[5])<(math.pi/3)+(15*math.pi/180))&(float(s[2])>296921)&(int(float(s[15]))==0):
 				index_sample = index_sample + 1
 				nb=int(float(s[1]))
 				if nb/1000<10:
