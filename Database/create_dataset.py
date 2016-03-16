@@ -35,8 +35,10 @@ if pathtoimages !="nopath":
 	number_test = 0
 	number_train = 0
 	
-	label_min = float('inf')
-	label_max = -float('inf')
+	labelx_min = float('inf')
+	labelx_max = -float('inf')
+	labely_min = float('inf')
+	labely_max = -float('inf')
 	
 	for date in train_date:
 		print date
@@ -70,8 +72,10 @@ if pathtoimages !="nopath":
 				proj_x = float(s[2])+math.cos(angle)*10;
 				proj_y = float(s[3])+math.sin(angle)*10;
 				
-				label_max = max(label_max, float(s[2]), float(s[3]), proj_x, proj_y)
-				label_min = min(label_min, float(s[2]), float(s[3]), proj_x, proj_y)
+				labelx_max = max(labelx_max, float(s[2]), proj_x)
+				labelx_min = min(labelx_min, float(s[2]), proj_x)
+				labely_max = max(labely_max, float(s[3]), proj_y)
+				labely_min = min(labely_min, float(s[3]), proj_y)
 				
 				if (index_sample % 5 == 0):
 					number_test = number_test +1
@@ -88,7 +92,7 @@ if pathtoimages !="nopath":
 	print "Total number of inputs = "+str(index_sample)
 	print "Train dataset = "+str(number_train)
 	print "Test dataset = "+str(number_test)
-	scale = 2/(label_max-label_min)
+	scale = 2/(max(labelx_max-labelx_min,labely_max-labely_min))
 	print "Scaling factor = "+str(scale)
 	t=open("scale.txt","w")
 	if (os.stat("scale.txt").st_size != 0):
