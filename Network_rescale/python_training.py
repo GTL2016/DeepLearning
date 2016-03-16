@@ -16,7 +16,13 @@ elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 solver = caffe.SGDSolver('solver.prototxt')
 
-scale = 0.000000194325685545
+os.chdir('../Database')
+f=open('scale.txt',"r")
+lines = f.readlines()
+for line in lines:
+	s = line
+scale = float(s)
+os.chdir('../Network_rescale')
 
 # Clearing the snap directory
 directory='./snap'

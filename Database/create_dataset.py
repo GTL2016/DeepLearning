@@ -88,7 +88,14 @@ if pathtoimages !="nopath":
 	print "Total number of inputs = "+str(index_sample)
 	print "Train dataset = "+str(number_train)
 	print "Test dataset = "+str(number_test)
-	print "Scaling factor = "+str(1/(label_max-label_min))
+	scale = 2/(label_max-label_min)
+	print "Scaling factor = "+str(scale)
+	t=open("scale.txt","w")
+	if (os.stat("scale.txt").st_size != 0):
+		os.remove('scale.txt')
+		t=open("scale.txt","w")
+	t.write(str(scale))
+	t.close
 	
 else:
 	print('Please state which machine you are using (gtl or supelec)')	
