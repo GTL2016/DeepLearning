@@ -78,9 +78,9 @@ if pathtoimages !="nopath":
 		ccount[c]=0
 
 	lmax={}
-	lmax["train"]=150000
-	lmax["val"]=5000
-	lmax["test"]=5000
+	lmax["train"]=5000
+	lmax["val"]=1000
+	lmax["test"]=1000
 
 	for date in dates:
 		

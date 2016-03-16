@@ -98,7 +98,7 @@ if pathtoimages !="nopath":
 	files={} #database file file handles
 	
 	for bdd in file_name:
-		files[bdd]=open(bdd+".txt","w")
+		files[bdd]=open("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt","w")
 		lcount[bdd]=0
 	
 	lmax={}
