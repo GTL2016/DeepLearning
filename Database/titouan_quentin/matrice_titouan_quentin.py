@@ -22,13 +22,9 @@ n_total=0
 def isValid(s):
 	#checks whether the image is good enough to be used in database
 	#todo : isvalid for other files with less classes
-	
 	return (float(s[6])<0.20)&(int(float(s[15]))==0)&(abs(float(s[5]))<2)
 
 def getLabel(s):
-
-
-
 	pos=[0,0,0]
 	x=float(s[2])-float(ref_utm[0])
 	y=float(s[3])-float(ref_utm[1])
@@ -39,8 +35,7 @@ def getLabel(s):
 	
 	return pos
 
-def writeToFile(s,label, b):	
-
+def writeToFile(s,label, b):
 	nb=int(float(s[1]))
 	if nb/1000<10:
 		tag="0"+str(nb/1000)
