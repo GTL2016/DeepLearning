@@ -52,11 +52,12 @@ solver.step(1)
 figure(3)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 figure(4)
-imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(23,7*10),cmap='gray')
 
 # Complete training
-max_iter = 500
-test_interval = 25
+max_iter = 31000
+test_interval = 1000
+test_iter = 101
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
 train_loss = zeros(max_iter)
@@ -74,7 +75,7 @@ for it in range(max_iter):
 	if it % test_interval == 0:
 		print 'Iteration', it, 'testing...'
 		correct = 0
-		for test_it in range(5):
+		for test_it in range(test_iter):
 			solver.test_nets[0].forward()
 
 print solver.test_nets[0].blobs['fc8'].data[:].shape
@@ -88,7 +89,7 @@ imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
 solver.test_nets[0].forward()
 labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
 pred = solver.test_nets[0].blobs['fc8'].data[:]
-for test_it in range(4):
+for test_it in range(test_iter-1):
 	solver.test_nets[0].forward()
 	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)))
 	pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))

@@ -14,18 +14,18 @@ elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 
 # scaling factor
-scale = 0.000000194325685545
+scale = 0.00420437875901
 
 # Snapshot to test
-net = caffe.Net('train_val.prototxt', './snap/_iter_900.caffemodel', caffe.TEST)
+net = caffe.Net('train_val.prototxt', './snap/_iter_13000.caffemodel', caffe.TEST)
 
 
 net.forward()
-labels = net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+labels = net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(23,4)
 pred = net.blobs['fc8'].data[:]
-for test_it in range(4):
+for test_it in range(100):
 	net.forward()
-	labels = np.concatenate((labels,net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)))
+	labels = np.concatenate((labels,net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(23,4)))
 	pred = np.concatenate((pred,net.blobs['fc8'].data[:]))
 # Taking into account the scaling factor
 labels = labels/scale

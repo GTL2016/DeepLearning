@@ -27,7 +27,7 @@ layer {
   }
   transform_param {
     mean_file: "../Database/train_label_mean.binaryproto"
-    scale: 0.000000194325685545
+    scale: 0.00420437875901
   }
   data_param {
     source: "../Database/train_label_lmdb"
@@ -50,7 +50,7 @@ layer {
   }
   data_param {
     source: "../Database/val_data_lmdb"
-    batch_size:5
+    batch_size: 23
     backend: LMDB
   }
 }
@@ -64,11 +64,11 @@ layer {
   }
   transform_param {
     mean_file: "../Database/val_label_mean.binaryproto"
-    scale: 0.000000194325685545
+    scale: 0.00420437875901
   }
   data_param {
     source: "../Database/val_label_lmdb"
-    batch_size: 5
+    batch_size: 23
     backend: LMDB
   }
 }
