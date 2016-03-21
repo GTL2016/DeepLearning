@@ -3,10 +3,7 @@ import sys
 import os
 
 filenames=["train","val","test"]
-<<<<<<< HEAD
 
-=======
->>>>>>> 766a3df4718cdfb15e21b279318911d3914562a8
 t=open("scale.txt","w")
 if (os.stat("scale.txt").st_size != 0):
 	os.remove('scale.txt')
