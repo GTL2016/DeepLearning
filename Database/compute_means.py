@@ -19,10 +19,11 @@ for f in filenames:
 		i = i+2
 		labelx_tot = labelx_tot + float(s[1])+ float(s[3])
 		labely_tot = labely_tot + float(s[2])+ float(s[4])
+	data.close()
 mean_x = labelx_tot/i
 mean_y = labely_tot/i
 print "Mean x = "+str(mean_x)
 print "Mean y = "+str(mean_y)
 t.write(str(mean_x)+"\n")
 t.write(str(mean_y))
-t.close
+t.close()
