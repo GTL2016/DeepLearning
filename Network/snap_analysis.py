@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
-test_iter = 100
-batch_size_test = 23 #test_iter*batch_size = nb of test images
+test_iter = 83
+batch_size_test = 1 #test_iter*batch_size = nb of test images
 
 
 if sys.argv[1]=='cpu':
@@ -20,7 +20,7 @@ elif sys.argv[1]=='gpu':
 
 
 # Snapshot to test
-net = caffe.Net('train_val.prototxt', './snap/_iter_13000.caffemodel', caffe.TEST)
+net = caffe.Net('train_val.prototxt', './snap/_iter_100.caffemodel', caffe.TEST)
 
 
 net.forward()
