@@ -87,16 +87,16 @@ if pathtoimages !="nopath":
 	b.close()
 	n_kept=sum(sum(sum(occ_mat)))
 	occ_mat/=occ_mat.max()
-	fig = plt.figure()
+	#fig = plt.figure()
 	for i in range(angl_pos):
 		occ_space+=occ_mat[:,:,i]
-		fig.clear()
-		plt.imshow(occ_mat[:,:,i])
-		fig.savefig(pathfigs+'/occ'+str(i)+'.png')
+		#fig.clear()
+		#plt.imshow(occ_mat[:,:,i])
+		#fig.savefig(pathfigs+'/occ'+str(i)+'.png')
 	occ_space/=occ_space.max()
-	fig.clear()
-	plt.imshow(occ_space)
-	fig.savefig('occ.png')
+	#fig.clear()
+	#plt.imshow(occ_space)
+	#fig.savefig('occ.png')
 
 	print "ratio : "+str(ratio)+" ; n_kept : "+str(n_kept)+" ; nb of classes : "+str(len(classes)); 
 	print "My work here is done."
