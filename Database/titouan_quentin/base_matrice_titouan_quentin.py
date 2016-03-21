@@ -147,11 +147,11 @@ if pathtoimages !="nopath":
 		print "Train :"+str(lcount["train"])+" images, Val :"+str(lcount["val"])+" images, Test :"+str(lcount["test"])
 		if (lcount["train"]>=lmax["train"])&(lcount["val"]>=lmax["val"])&(lcount["test"]>=lmax["test"]):
 			break
-	for bdd in file_name:
-		# Plotting classes representation for the 3 datasets
-		plt.plot(range(number_of_classes), ccount[bdd], '+')
-		plt.axis([0, number_of_classes, 0, max(ccount[bdd])*3])
-		plt.savefig("classcount_"+bdd+".png")
+	#for bdd in file_name:
+		## Plotting classes representation for the 3 datasets
+		#plt.plot(range(number_of_classes), ccount[bdd], '+')
+		#plt.axis([0, number_of_classes, 0, max(ccount[bdd])*3])
+		#plt.savefig("classcount_"+bdd+".png")
 	print "My work here is done."
 else:
 	print('Please state which machine you are using (gtl or supelec)')
