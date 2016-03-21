@@ -84,6 +84,7 @@ if pathtoimages !="nopath":
 					b.write(str(i)+str(j)+str(k)+"\n")
 				else:
 					occ_mat[i,j,k]=0
+	b.close()
 	n_kept=sum(sum(sum(occ_mat)))
 	occ_mat/=occ_mat.max()
 	fig = plt.figure()
