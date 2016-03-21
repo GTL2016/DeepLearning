@@ -9,6 +9,10 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import glob
 
+test_iter = 101
+batch_size_test = 23 #test_iter*batch_size = nb of test images
+max_iter = 31000 #Number of iterations for the training
+test_interval = 1000 #interval between two tests
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -52,12 +56,9 @@ solver.step(1)
 figure(3)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 figure(4)
-imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(23,7*10),cmap='gray')
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
 
 # Complete training
-max_iter = 31000
-test_interval = 1000
-test_iter = 101
 # losses will also be stored in the log
 #test_acc = zeros(int(np.ceil(max_iter / test_interval)))
 train_loss = zeros(max_iter)
@@ -84,14 +85,14 @@ print solver.test_nets[0].blobs['fc8'].data[:].shape
 figure(5)
 imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 figure(6)
-imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(5,7*10),cmap='gray')
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
 
 solver.test_nets[0].forward()
-labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
 pred = solver.test_nets[0].blobs['fc8'].data[:]
 for test_it in range(test_iter-1):
 	solver.test_nets[0].forward()
-	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)))
+	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
 	pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
 # Taking into account the scaling factor
 labels = labels/scale
