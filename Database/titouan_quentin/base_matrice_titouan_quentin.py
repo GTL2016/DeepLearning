@@ -20,7 +20,7 @@ def isValid(s):
 	#todo : isvalid for other files with less classes
 	return (float(s[6])<0.20)&(int(float(s[15]))==0)&(abs(float(s[5]))<2)
 
-def getLabel(s):
+def getDicretePos(s):
 	pos=[0,0,0]
 	x=float(s[2])-float(ref_utm[0])
 	y=float(s[3])-float(ref_utm[1])
@@ -28,7 +28,6 @@ def getLabel(s):
 	pos[1]=int(round(y/step))
 	orient=math.fmod((float(s[4])-float(s[5])),(2*math.pi))
 	pos[2]=int(round(orient*(angl_pos-1)/(2*math.pi)))
-	
 	return str(pos[0])+str(pos[1])+str(pos[2])
 
 def load_classes():
@@ -82,16 +81,32 @@ if pathtoimages !="nopath":
 	dates.remove('151214')
 	random.shuffle(dates)
 	
+	# Number of different classes in the datasets
+	number_of_classes = 200
+	# Max number of instances for each class
+	max_in_class={}
+	max_in_class["train"]=5
+	max_in_class["val"]=math.floor(max_in_class["train"]/3)
+	max_in_class["test"]=math.floor(max_in_class["train"]/3)
+	# Size of each dataset accordingly
+	lmax={}
+	lmax["train"]=number_of_classes*max_in_class["train"]
+	lmax["val"]=number_of_classes*max_in_class["val"]
+	lmax["test"]=number_of_classes*max_in_class["test"]
+	print "Considering "+str(number_of_classes)+" different classes in the train/val/test datasets"
+	print "Train dataset: "+str(lmax["train"])+" images. "+str(max_in_class["train"])+" images per class"
+	print "Val dataset: "+str(lmax["val"])+" images. "+str(max_in_class["val"])+" images per class"
+	print "Test dataset: "+str(lmax["test"])+" images. "+str(max_in_class["test"])+" images per class"
 	
 	#creating file handles and line count
 	file_name=["train","val","test"]
 	best_classes=load_classes()
-	N=306
-	classes=random.sample(best_classes,N)
+	classes=random.sample(best_classes,number_of_classes)
 	ind=reindex(classes)
-	lcount={} #counter for databases
-	ccount=[0 for s in range(N)] #counter for classes
-	files={} #database file file handles
+	lcount={} # counter for databases
+	# ccount=np.zeros((round(estmax/step),round(nordmax/step),angl_pos)) # counter matrix for classes
+	ccount = {} # counter for classes
+	files={} # database file file handles
 	
 	for bdd in file_name:
 		files[bdd]=open("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt","w")
@@ -100,51 +115,43 @@ if pathtoimages !="nopath":
 			os.remove("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt")
 			files[bdd]=open("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt","w")
 		lcount[bdd]=0
-	
-	lmax={}
-	lmax["train"]=300000
-	lmax["val"]=10000
-	lmax["test"]=5000
+		ccount[bdd]=[0 for s in range(number_of_classes)] 
 	
 	for date in dates:
-		
 		print date
 		path=pathtoimages+date
-
 		f=open(path+"/image_auxilliary.csv","r")
 		l = f.readlines()
 		L=[s.strip().split(',') for s in l if s[0]!='%']
 		if len(L[0])<15:
 			f.close()
 			continue
-
 		for s in L:
 			if not isValid(s): continue
-			
 			base = random.choice(file_name)
 			current_file=files[base]
-			label = getLabel(s)
-			if label in classes:
-				writeToFile(s,ind[label],current_file)
+			pos = getDicretePos(s)
+			# Only select classes among the best ones selected
+			if (pos in classes) and (ccount[base][int(ind[pos])]<max_in_class[base]) :
+				writeToFile(s,ind[pos],current_file)
 				lcount[base]+=1
-				ccount[int(ind[label])]+=1
-
+				ccount[base][int(ind[pos])]+=1
+			# Closing current file if the maximum number of images is reached
 			if lcount[base]>=lmax[base]:
 				files[base].close()
 				file_name.remove(base)
-
+			# Stopping everything if databases filled or overfilled
 			if (lcount["train"]>=lmax["train"])&(lcount["val"]>=lmax["val"])&(lcount["test"]>=lmax["test"]):
 				break
-
 		f.close()
 		print "fin "+date
 		
 		if (lcount["train"]>=lmax["train"])&(lcount["val"]>=lmax["val"])&(lcount["test"]>=lmax["test"]):
 			break
-
-	plt.plot(range(N), ccount, '+')
-	plt.axis([0, N, 0, max(ccount)])
-	plt.savefig("classcount.png")
+	## Plotting classes representation
+	#plt.plot(range(number_of_classes), ccount, '+')
+	#plt.axis([0, number_of_classes, 0, max(ccount)])
+	#plt.savefig("classcount.png")
 	print "My work here is done."
 else:
 	print('Please state which machine you are using (gtl or supelec)')

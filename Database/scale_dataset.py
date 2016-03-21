@@ -10,8 +10,7 @@ import matplotlib.pyplot as plt
 f=open('scale.txt',"r")
 lines = f.readlines()
 for line in lines:
-	s = line
-scale = float(s)
+	scale = float(line)
 f.close()
 
 
