@@ -15,12 +15,9 @@ angl_pos=36 # 10 deg. zone
 ref_gps=[49.101254,6.215672]#ref bas gauche
 ref_utm=[296771.703361087,5442445.66151712]
 
-
-
 def isValid(s):
 	#checks whether the image is good enough to be used in database
 	#todo : isvalid for other files with less classes
-	
 	return (float(s[6])<0.20)&(int(float(s[15]))==0)&(abs(float(s[5]))<2)
 
 def getLabel(s):
@@ -33,6 +30,7 @@ def getLabel(s):
 	pos[2]=int(round(orient*(angl_pos-1)/(2*math.pi)))
 	
 	return str(pos[0])+str(pos[1])+str(pos[2])
+
 def load_classes():
 	f=open("best_classes.txt","r")
 	l = f.readlines()
@@ -41,6 +39,7 @@ def load_classes():
 	for s in L:
 		classes+=s
 	return classes
+
 def reindex(classes):
 	index={}
 	ind=0
@@ -49,8 +48,7 @@ def reindex(classes):
 		ind+=1
 	return index	
 
-def writeToFile(s,label, b):	
-
+def writeToFile(s,label, b):
 	nb=int(float(s[1]))
 	if nb/1000<10:
 		tag="0"+str(nb/1000)
@@ -63,7 +61,11 @@ def writeToFile(s,label, b):
 			index="0"+str(nb%1000)
 		else:
 			index=str(nb%1000)		
-	b.write("tale/"+date+"/00"+tag+"/0"+index+".jpg "+label+"\n")
+	angle = float(s[4])-float(s[5])
+	proj_x = float(s[2])+math.cos(angle)*10;
+	proj_y = float(s[3])+math.sin(angle)*10;
+	b.write("/mnt/tale/"+date+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
+
 
 pathtoimages = "nopath";
 if sys.argv[1]=='supelec':
@@ -74,12 +76,6 @@ elif sys.argv[1]=='gtl':
 
 if pathtoimages !="nopath":
     
-	#remove existing files, uncomment if needed
-	#todo : check that the file exists before removal
-	#os.remove('train.txt')
-	#os.remove('val.txt')
-	#os.remove('test.txt')
-
 	dates = [s for s in os.listdir(pathtoimages) if os.path.isdir(pathtoimages+s)]
 	dates.remove('150414')#bogus dataset
 	dates.remove('131209')#bogus dataset
@@ -99,13 +95,17 @@ if pathtoimages !="nopath":
 	
 	for bdd in file_name:
 		files[bdd]=open("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt","w")
+		#remove existing files
+		if (os.stat("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt").st_size != 0):
+			os.remove("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt")
+			files[bdd]=open("/home/gpu_user/local/pfe/regression/DeepLearning/Database/"+bdd+".txt","w")
 		lcount[bdd]=0
 	
 	lmax={}
 	lmax["train"]=300000
 	lmax["val"]=10000
 	lmax["test"]=5000
-
+	
 	for date in dates:
 		
 		print date
@@ -145,7 +145,6 @@ if pathtoimages !="nopath":
 	plt.plot(range(N), ccount, '+')
 	plt.axis([0, N, 0, max(ccount)])
 	plt.savefig("classcount.png")
-	
 	print "My work here is done."
 else:
 	print('Please state which machine you are using (gtl or supelec)')
