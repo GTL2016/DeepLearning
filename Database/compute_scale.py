@@ -26,5 +26,5 @@ for f in filenames:
 		labely_min = min(labely_min, float(s[2]), float(s[4]))
 scale = 2/(max(labelx_max-labelx_min,labely_max-labely_min))
 print "Scaling factor = "+str(scale)
-t.write("Scaling factor = "+str(scale))
+t.write(str(scale))
 t.close
