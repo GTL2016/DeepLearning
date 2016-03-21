@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 file_name = sys.argv[1]+".txt";
 
-
 f=open(file_name,"r")
 l = f.readlines()
 L=[s.strip().split(' ') for s in l]
