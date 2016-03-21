@@ -55,7 +55,8 @@ def writeToFile(s,label, b):
 			index="0"+str(nb%1000)
 		else:
 			index=str(nb%1000)		
-	angle = float(s[4])-float(s[5])
+	#angle = float(s[4])-float(s[5])
+	angle = math.fmod((float(s[4])-float(s[5])),(2*math.pi))
 	proj_x = float(s[2])+math.cos(angle)*10;
 	proj_y = float(s[3])+math.sin(angle)*10;
 	b.write("/mnt/tale/"+date+"/00"+tag+"/0"+index+".jpg "+s[2]+" "+s[3]+" "+str(proj_x)+" "+str(proj_y)+"\n")
@@ -142,10 +143,11 @@ if pathtoimages !="nopath":
 		
 		if (lcount["train"]>=lmax["train"])&(lcount["val"]>=lmax["val"])&(lcount["test"]>=lmax["test"]):
 			break
-	## Plotting classes representation
-	#plt.plot(range(number_of_classes), ccount, '+')
-	#plt.axis([0, number_of_classes, 0, max(ccount)])
-	#plt.savefig("classcount.png")
+	for bdd in file_name:
+		# Plotting classes representation for the 3 datasets
+		plt.plot(range(number_of_classes), ccount[bdd], '+')
+		plt.axis([0, number_of_classes, 0, max(ccount[bdd])*3])
+		plt.savefig("classcount_"+bdd+".png")
 	print "My work here is done."
 else:
 	print('Please state which machine you are using (gtl or supelec)')
