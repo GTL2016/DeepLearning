@@ -9,10 +9,10 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import glob
 
-test_iter = 83
-batch_size_test = 1 #test_iter*batch_size = nb of test images
-max_iter = 200 #Number of iterations for the training
-test_interval = 25 #interval between two tests
+test_iter = 8
+batch_size_test = 25 #test_iter*batch_size = nb of test images
+max_iter = 200000 #Number of iterations for the training
+test_interval = 5000 #interval between two tests
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
