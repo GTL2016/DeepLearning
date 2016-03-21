@@ -5,11 +5,6 @@ import os
 import random
 import matplotlib.pyplot as plt
 
-
-#param
-estmax=350 #m
-nordmax=600 #max
-
 step=2.5 #m
 angl_pos=36 # 10 deg. zone
 ref_gps=[49.101254,6.215672]#ref bas gauche
@@ -104,7 +99,6 @@ if pathtoimages !="nopath":
 	classes=random.sample(best_classes,number_of_classes)
 	ind=reindex(classes)
 	lcount={} # counter for databases
-	# ccount=np.zeros((round(estmax/step),round(nordmax/step),angl_pos)) # counter matrix for classes
 	ccount = {} # counter for classes
 	files={} # database file file handles
 	
