@@ -9,10 +9,10 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    #mean_file: "../Database/train_data_mean.binaryproto"
+    mean_file: "../Database/train_rescaled_data_mean.binaryproto"
   }
   data_param {
-    source: "../Database/train_data_lmdb"
+    source: "../Database/train_rescaled_data_lmdb"
     batch_size: 30
     backend: LMDB
   }
@@ -26,10 +26,10 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    mean_file: "../Database/train_label_mean.binaryproto"
+    #mean_file: "../Database/train_rescaled_label_mean.binaryproto"
   }
   data_param {
-    source: "../Database/train_label_lmdb"
+    source: "../Database/train_rescaled_label_lmdb"
     batch_size: 30
     backend: LMDB
   }
@@ -45,11 +45,11 @@ layer {
     phase: TEST
   }
   transform_param {
-    mean_file: "../Database/val_data_mean.binaryproto"
+    mean_file: "../Database/val_rescaled_data_mean.binaryproto"
   }
   data_param {
-    source: "../Database/val_data_lmdb"
-    batch_size:5
+    source: "../Database/val_rescaled_data_lmdb"
+    batch_size:1
     backend: LMDB
   }
 }
@@ -62,11 +62,11 @@ layer {
     phase: TEST
   }
   transform_param {
-    #mean_file: "../Database/val_label_mean.binaryproto"
+    #mean_file: "../Database/val_rescaled_label_mean.binaryproto"
   }
   data_param {
-    source: "../Database/val_label_lmdb"
-    batch_size: 5
+    source: "../Database/val_rescaled_label_lmdb"
+    batch_size: 1
     backend: LMDB
   }
 }
