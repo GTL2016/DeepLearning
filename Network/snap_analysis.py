@@ -8,28 +8,28 @@ import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
+test_iter = 100
+batch_size_test = 23 #test_iter*batch_size = nb of test images
+
+
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 
-# scaling factor
-scale = 0.000000194325685545
+
 
 # Snapshot to test
-net = caffe.Net('train_val.prototxt', './snap/_iter_900.caffemodel', caffe.TEST)
+net = caffe.Net('train_val.prototxt', './snap/_iter_13000.caffemodel', caffe.TEST)
 
 
 net.forward()
-labels = net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)
+labels = net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
 pred = net.blobs['fc8'].data[:]
-for test_it in range(4):
+for test_it in range(test_iter):
 	net.forward()
-	labels = np.concatenate((labels,net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(5,4)))
+	labels = np.concatenate((labels,net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
 	pred = np.concatenate((pred,net.blobs['fc8'].data[:]))
-# Taking into account the scaling factor
-labels = labels/scale
-pred = pred/scale
 
 
 # Plotting position and predicted position
