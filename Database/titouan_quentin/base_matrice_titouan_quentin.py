@@ -130,7 +130,6 @@ if pathtoimages !="nopath":
 			base = random.choice(file_name)
 			current_file=files[base]
 			pos = getDicretePos(s)
-			print(pos)
 			# Only select classes among the best ones selected
 			if (pos in classes) and (ccount[base][int(ind[pos])]<max_in_class[base]) :
 				writeToFile(s,ind[pos],current_file)

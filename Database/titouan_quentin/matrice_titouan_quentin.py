@@ -28,7 +28,7 @@ def getLabel(s):
 	y=float(s[3])-float(ref_utm[1])
 	pos[0]=int(round(x/step))
 	pos[1]=int(round(y/step))
-	orient=math.fmod((float(s[4])-float(s[5])),(2*math.pi))
+	orient=(float(s[4])-float(s[5]))%(2*math.pi)
 	pos[2]=int(round(orient*(angl_pos-1)/(2*math.pi)))
 	return pos
 
@@ -63,7 +63,6 @@ if pathtoimages !="nopath":
 		for s in L:
 			if not isValid(s): continue
 			pos = getLabel(s)
-			print(pos[:])
 			occ_mat[pos[0],pos[1],pos[2]]+=1
 			n_total+=1
 		f.close()
