@@ -63,6 +63,7 @@ if pathtoimages !="nopath":
 		for s in L:
 			if not isValid(s): continue
 			pos = getLabel(s)
+			print(pos[:])
 			occ_mat[pos[0],pos[1],pos[2]]+=1
 			n_total+=1
 		f.close()

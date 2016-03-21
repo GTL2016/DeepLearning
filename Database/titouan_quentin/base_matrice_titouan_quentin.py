@@ -21,7 +21,7 @@ def getDicretePos(s):
 	y=float(s[3])-float(ref_utm[1])
 	pos[0]=int(round(x/step))
 	pos[1]=int(round(y/step))
-	orient=math.fmod((float(s[4])-float(s[5])),(2*math.pi))
+	orient=(float(s[4])-float(s[5]))%(2*math.pi)
 	pos[2]=int(round(orient*(angl_pos-1)/(2*math.pi)))
 	return str(pos[0])+str(pos[1])+str(pos[2])
 
@@ -98,6 +98,7 @@ if pathtoimages !="nopath":
 	file_name=["train","val","test"]
 	best_classes=load_classes()
 	classes=random.sample(best_classes,number_of_classes)
+	print(classes[:])
 	ind=reindex(classes)
 	lcount={} # counter for databases
 	ccount = {} # counter for classes
@@ -112,7 +113,10 @@ if pathtoimages !="nopath":
 		lcount[bdd]=0
 		ccount[bdd]=[0 for s in range(number_of_classes)] 
 	
-	for date in dates:
+	# While the datasets are not full
+	while (lcount["train"]<lmax["train"])or(lcount["val"]<lmax["val"])or(lcount["test"]<lmax["test"]):
+	#for date in dates:
+		date = random.choice(dates)
 		print date
 		path=pathtoimages+date
 		f=open(path+"/image_auxilliary.csv","r")
@@ -126,6 +130,7 @@ if pathtoimages !="nopath":
 			base = random.choice(file_name)
 			current_file=files[base]
 			pos = getDicretePos(s)
+			print(pos)
 			# Only select classes among the best ones selected
 			if (pos in classes) and (ccount[base][int(ind[pos])]<max_in_class[base]) :
 				writeToFile(s,ind[pos],current_file)
@@ -140,7 +145,7 @@ if pathtoimages !="nopath":
 				break
 		f.close()
 		print "fin "+date
-		
+		print "Train :"+str(lcount["train"])+" images, Val :"+str(lcount["val"])+" images, Test :"+str(lcount["test"])
 		if (lcount["train"]>=lmax["train"])&(lcount["val"]>=lmax["val"])&(lcount["test"]>=lmax["test"]):
 			break
 	for bdd in file_name:
