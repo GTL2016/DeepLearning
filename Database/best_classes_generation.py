@@ -14,7 +14,7 @@ step=2.5 #m
 angl_pos=36 # 10 deg. zone
 ref_gps=[49.101254,6.215672]#ref bas gauche
 ref_utm=[296771.703361087,5442445.66151712]
-pathfigs='/home/gpu_user/local/pfe/regression/DeepLearning/Database/titouan_quentin'
+pathfigs='/home/gpu_user/local/pfe/regression/DeepLearning/Database'
 n_total=0
 
 def isValid(s):
