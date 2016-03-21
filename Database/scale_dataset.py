@@ -24,11 +24,11 @@ f.close()
 
 filenames=["train","val","test"]
 
-for (name in filenames):
-	t = open(name+"rescaled.txt","w")
-	if (os.stat(name+"rescaled.txt").st_size != 0):
-	os.remove(name+"rescaled.txt")
-	t=open(name+"rescaled.txt","w")
+for name in filenames:
+	t = open(name+"_rescaled.txt","w")
+	if (os.stat(name+"_rescaled.txt").st_size != 0):
+		os.remove(name+"_rescaled.txt")
+		t=open(name+"_rescaled.txt","w")
 	
 	data=open(name+".txt","r")
 	l = data.readlines()

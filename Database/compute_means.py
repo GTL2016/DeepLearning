@@ -17,8 +17,8 @@ for f in filenames:
 	L=[s.strip().split(' ') for s in l if s[0]!='%']
 	for s in L:
 		i = i+2
-		labelx_tot = labelx_tot + float(s[1]), float(s[3])
-		labely_tot = labely_tot + float(s[2]), float(s[4])
+		labelx_tot = labelx_tot + float(s[1])+ float(s[3])
+		labely_tot = labely_tot + float(s[2])+ float(s[4])
 mean_x = labelx_tot/i
 mean_y = labely_tot/i
 print "Mean x = "+str(mean_x)

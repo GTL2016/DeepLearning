@@ -11,7 +11,7 @@ import os
 
 interp_order = 1
 
-if ((len(sys.argv)==2 or len(sys.argv)==4) and (sys.argv[1]=='train' or sys.argv[1]=='val')):
+if ((len(sys.argv)==2 or len(sys.argv)==4)):
 	# Command line to check created files:
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/train_score_lmdb/
 	# python -mlmdb stat --env=./Downloads/caffe-master/data/liris-accede/val_score_lmdb/
