@@ -11,8 +11,8 @@ import glob
 
 test_iter = 8
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-max_iter = 200000 #Number of iterations for the training
-test_interval = 5000 #interval between two tests
+max_iter = 1000 #Number of iterations for the training
+test_interval = 100 #interval between two tests
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -26,9 +26,17 @@ os.chdir(directory)
 files=glob.glob('*')
 for filename in files:
     os.remove(filename)
+os.chdir('..') # coming back to Network directory
 
-os.chdir('..')
+# Clearing previous training figures
+pathfigs='./figures'
+os.chdir(pathfigs)
+files=glob.glob('*')
+for filename in files:
+    os.remove(filename)
+os.chdir('..') # coming back to Network directory
 
+# Printing outputs size and weights size for the current training
 # each output is (batch size, feature dim, spatial dim)
 a = [(k, v.data.shape) for k, v in solver.net.blobs.items()]
 print(a)
@@ -37,81 +45,66 @@ b = [(k, v[0].data.shape) for k, v in solver.net.params.items()]
 print(b)
 solver.net.forward()
 solver.test_nets[0].forward()
-# we use a little trick to tile the first image (mosaique des images si batch size > 1)
-figure(1)
+
+# Ploting the first images of the train and val datasets (mosaique des images si batch size > 1, ici selection de 1 dans data)
+fig = figure()
 imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352),cmap='gray')
-figure(2)
+fig.savefig(pathfigs+'/image1_trainset.png')
+fig.clear()
 imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
+fig.savefig(pathfigs+'/image1_valset.png')
 
-# 1 Iteration to display conv 1 layer
-solver.step(1)
-figure(3)
-imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
-figure(4)
-imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
-
-# Complete training
-# losses will also be stored in the log
-#test_acc = zeros(int(np.ceil(max_iter / test_interval)))
+# Training
 train_loss = zeros(max_iter)
-output = zeros((max_iter, 5, 4)) # second argument is number of classes (4) and first is the number of examples to display/select (here we choose 8 first images)
 # the main solver loop
 for it in range(max_iter):
 	solver.step(1)  # SGD by Caffe
 	# store the train loss
 	train_loss[it] = solver.net.blobs['loss'].data
-	# store the output on the first test batch
-	# (start the forward pass at conv1 to avoid loading new data)
+	# start the forward pass at conv1 to avoid loading new data
 	solver.test_nets[0].forward(start='conv1')
-	output[it] = solver.test_nets[0].blobs['fc8'].data[:5]
 	# run a full test every so often (Caffe can also do this for us and write to a log, but we show here how to do it directly in Python, where more complicated things are easier.)
 	if it % test_interval == 0:
 		print 'Iteration', it, 'testing...'
-		correct = 0
-		for test_it in range(test_iter):
+		solver.test_nets[0].forward()
+		labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
+		pred = solver.test_nets[0].blobs['fc8'].data[:]
+		for test_it in range(test_iter-1):
 			solver.test_nets[0].forward()
-
-print solver.test_nets[0].blobs['fc8'].data[:].shape
-
-# Display conv1 layer after max_iter iterations:
-figure(5)
-imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
-figure(6)
-imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
-
-solver.test_nets[0].forward()
-labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
-pred = solver.test_nets[0].blobs['fc8'].data[:]
-for test_it in range(test_iter-1):
-	solver.test_nets[0].forward()
-	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
-	pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
-
-# Plotting position and predicted position
-figure(7)
-scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
-scatter(labels[:,2],labels[:,3],s=25,c='r',marker='+')
-scatter(pred[:,0],pred[:,1],s=25,c='b',marker='+')
-scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
-quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
-quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
-
-# Plotting prediction error for the position X/Y
-figure(8)
-scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
-
-# Plotting angle error (histogram)
-figure(9)
-hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
-
-# Plotting loss 
-figure(10)
-plt.plot(arange(max_iter-50), train_loss[50:])
-plt.xlabel('iteration')
-plt.ylabel('train loss')
-
-# Show all figures
-show()
+			labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
+			pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
+		# Plotting conv1 weights layer at test interval
+		fig.clear()
+		imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+		fig.savefig(pathfigs+'/conv1_'+str(it)+'.png')
+		# Plotting output of pool5 layer at test interval
+		fig.clear()
+		imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+		fig.savefig(pathfigs+'/pool5_'+str(it)+'.png')
+		# Plotting position and predicted position at test interval
+		fig.clear()
+		scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
+		scatter(labels[:,2],labels[:,3],s=25,c='r',marker='+')
+		scatter(pred[:,0],pred[:,1],s=25,c='b',marker='+')
+		scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
+		quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
+		quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
+		fig.savefig(pathfigs+'/labels_view_'+str(it)+'.png')
+		# Plotting prediction error for the position X/Y
+		fig.clear()
+		scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
+		fig.savefig(pathfigs+'/error_xy_'+str(it)+'.png')
+		# Plotting angle error (histogram)
+		fig.clear()
+		hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
+		fig.savefig(pathfigs+'/error_angle_'+str(it)+'.png')
+		if (it>=50):
+			# Plotting loss 
+			fig.clear()
+			plt.plot(arange(it)[50:it], train_loss[50:it])
+			plt.xlabel('iteration')
+			plt.ylabel('train loss')
+			fig.savefig(pathfigs+'/loss_'+str(it)+'.png')
 
 ## Plotting loss 
 #figure(6)
