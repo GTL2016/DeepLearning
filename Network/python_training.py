@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import glob
 
 test_iter = 8
+batch_size_train = 30
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 max_iter = 30000 #Number of iterations for the training
 test_interval = 200 #interval between two tests
@@ -56,11 +57,17 @@ fig.savefig(pathfigs+'/image1_valset.png')
 
 # Training
 train_loss = zeros(max_iter)
+train_loss_manual = zeros(math.floor(max_iter/test_interval))
 # the main solver loop
 for it in range(max_iter):
 	solver.step(1)  # SGD by Caffe
 	# store the train loss
 	train_loss[it] = solver.net.blobs['loss'].data
+	label_loss = solver.net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_train,4)
+	pred_loss = solver.net.blobs['fc8'].data[:]
+	train_loss_manual_vect = math.sqrt((label_loss[:,0]-pred_loss[:,0])*(label_loss[:,0]-pred_loss[:,0])+(label_loss[:,1]-pred_loss[:,1])*(label_loss[:,1]-pred_loss[:,1])+(label_loss[:,2]-pred_loss[:,2])*(label_loss[:,2]-pred_loss[:,2])+(label_loss[:,3]-pred_loss[:,3])*(label_loss[:,3]-pred_loss[:,3]))
+	train_loss_manual[it] = np.mean(train_loss_manual_vect)
+	print(train_loss[it]-train_loss_manual[it])
 	# start the forward pass at conv1 to avoid loading new data
 	solver.test_nets[0].forward(start='conv1')
 	# run a full test every so often (Caffe can also do this for us and write to a log, but we show here how to do it directly in Python, where more complicated things are easier.)
