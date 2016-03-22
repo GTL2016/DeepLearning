@@ -10,19 +10,15 @@ import matplotlib.pyplot as plt
 
 test_iter = 8
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-index_snap = 5000
+index_snap = 100000
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 
-
-
 # Snapshot to test
 net = caffe.Net('train_val.prototxt', './snap/_iter_'+str(index_snap)+'.caffemodel', caffe.TEST)
-
-
 net.forward()
 labels = net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
 pred = net.blobs['fc8'].data[:]
