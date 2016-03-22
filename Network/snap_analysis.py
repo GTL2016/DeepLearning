@@ -43,7 +43,7 @@ scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
 
 # Plotting angle error (histogram)
 figure(9)
-hist(np.arctan2(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan2(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
+hist(((np.arctan2(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan2(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))%(2*pi))*180/pi)
 
 # Show all figures
 show()
