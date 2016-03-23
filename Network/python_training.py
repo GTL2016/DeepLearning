@@ -112,6 +112,27 @@ for it in range(max_iter):
 			plt.xlabel('iteration')
 			plt.ylabel('train loss')
 			fig.savefig(pathfigs+'/loss_'+str(it)+'.png')
+		# Tests to visualize histograms of conv param weights
+		# Conv1
+		fig.clear()
+		hist(solver.net.params['conv1'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/conv1_hist_'+str(it)+'.png')
+		# Conv2
+		fig.clear()
+		hist(solver.net.params['conv2'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/conv2_hist_'+str(it)+'.png')
+		# Conv3
+		fig.clear()
+		hist(solver.net.params['conv3'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/conv3_hist_'+str(it)+'.png')
+		# Conv4
+		fig.clear()
+		hist(solver.net.params['conv4'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/conv4_hist_'+str(it)+'.png')
+		# Conv5
+		fig.clear()
+		hist(solver.net.params['conv5'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/conv5_hist_'+str(it)+'.png')
 
 ## Plotting loss 
 #figure(6)
