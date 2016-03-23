@@ -84,6 +84,22 @@ for it in range(max_iter):
 		fig.clear()
 		imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
 		fig.savefig(pathfigs+'/conv1_'+str(it)+'.png')
+		# Plotting output of pool1 layer at test interval
+		fig.clear()
+		imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+		fig.savefig(pathfigs+'/pool1_'+str(it)+'.png')
+		# Plotting output of norm1 layer at test interval
+		fig.clear()
+		imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+		fig.savefig(pathfigs+'/norm1_'+str(it)+'.png')
+		# Plotting output of pool2 layer at test interval
+		fig.clear()
+		imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+		fig.savefig(pathfigs+'/pool2_'+str(it)+'.png')
+		# Plotting output of norm2 layer at test interval
+		fig.clear()
+		imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+		fig.savefig(pathfigs+'/norm2_'+str(it)+'.png')
 		# Plotting output of pool5 layer at test interval
 		fig.clear()
 		imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
@@ -112,7 +128,7 @@ for it in range(max_iter):
 			plt.xlabel('iteration')
 			plt.ylabel('train loss')
 			fig.savefig(pathfigs+'/loss_'+str(it)+'.png')
-		# Tests to visualize histograms of conv param weights
+		# Tests to visualize histograms of conv and fc param weights
 		# Conv1
 		fig.clear()
 		hist(solver.net.params['conv1'][0].diff[:, 0].flatten())
@@ -133,6 +149,30 @@ for it in range(max_iter):
 		fig.clear()
 		hist(solver.net.params['conv5'][0].diff[:, 0].flatten())
 		fig.savefig(pathfigs+'/conv5_hist_'+str(it)+'.png')
+		# fc6
+		fig.clear()
+		hist(solver.net.params['fc6'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/fc6_hist_'+str(it)+'.png')
+		# fc7
+		fig.clear()
+		hist(solver.net.params['fc7'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/fc7_hist_'+str(it)+'.png')
+		# fc8
+		fig.clear()
+		hist(solver.net.params['fc8'][0].diff[:, 0].flatten())
+		fig.savefig(pathfigs+'/fc8_hist_'+str(it)+'.png')
+		# Norm1 out
+		fig.clear()
+		hist(solver.test_nets[0].blobs['norm1'].data[:,0].flatten())
+		fig.savefig(pathfigs+'/norm1_out_hist_'+str(it)+'.png')
+		# Norm2 out
+		fig.clear()
+		hist(solver.test_nets[0].blobs['norm2'].data[:,0].flatten())
+		fig.savefig(pathfigs+'/norm2_out_hist_'+str(it)+'.png')
+		# Pool5 out
+		fig.clear()
+		hist(solver.test_nets[0].blobs['pool5'].data[:,0].flatten())
+		fig.savefig(pathfigs+'/pool5_out_hist_'+str(it)+'.png')
 
 ## Plotting loss 
 #figure(6)
