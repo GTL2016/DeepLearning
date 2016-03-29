@@ -15,11 +15,11 @@ for line in lines:
 f.close()
 
 
-f=open('mean.txt',"r")
+f=open('reference_point.txt',"r")
 line = f.readline()
-mean_x = float(line)
+ref_x = float(line)
 line = f.readline()
-mean_y = float(line)
+ref_y = float(line)
 f.close()
 
 filenames=["train","val","test"]
@@ -34,6 +34,6 @@ for name in filenames:
 	l = data.readlines()
 	L=[s.strip().split(' ') for s in l if s[0]!='%']
 	for s in L:
-		t.write(s[0] + " " +str((float(s[1])-mean_x)*scale)+" "+str((float(s[2])-mean_y)*scale)+" "+str((float(s[3])-mean_x)*scale)+" "+str((float(s[4])-mean_y)*scale)+"\n")
+		t.write(s[0] + " " +str((float(s[1])-ref_x)*scale)+" "+str((float(s[2])-ref_y)*scale)+" "+str((float(s[3])-ref_x)*scale)+" "+str((float(s[4])-ref_y)*scale)+"\n")
 	t.close()
 
