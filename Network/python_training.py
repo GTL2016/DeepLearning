@@ -44,11 +44,117 @@ print(a)
 # just print the weight sizes (not biases)
 b = [(k, v[0].data.shape) for k, v in solver.net.params.items()]
 print(b)
-solver.net.forward()
+
+
+it = 0
 solver.test_nets[0].forward()
+# Plotting the initialisation
+fig = figure()
+labels = solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)
+pred = solver.test_nets[0].blobs['fc8'].data[:]
+for test_it in range(test_iter-1):
+	solver.test_nets[0].forward()
+	labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
+	pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
+# Plotting conv1 weights layer at test interval
+fig.clear()
+imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+fig.savefig(pathfigs+'/conv1_'+str(it)+'.png')
+# Plotting output of pool1 layer at test interval
+fig.clear()
+imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+fig.savefig(pathfigs+'/pool1_'+str(it)+'.png')
+# Plotting output of norm1 layer at test interval
+fig.clear()
+imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+fig.savefig(pathfigs+'/norm1_'+str(it)+'.png')
+# Plotting output of pool2 layer at test interval
+fig.clear()
+imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+fig.savefig(pathfigs+'/pool2_'+str(it)+'.png')
+# Plotting output of norm2 layer at test interval
+fig.clear()
+imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+fig.savefig(pathfigs+'/norm2_'+str(it)+'.png')
+# Plotting output of pool5 layer at test interval
+fig.clear()
+imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+fig.savefig(pathfigs+'/pool5_'+str(it)+'.png')
+# Plotting position and predicted position at test interval
+fig.clear()
+scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
+scatter(labels[:,2],labels[:,3],s=25,c='r',marker='+')
+scatter(pred[:,0],pred[:,1],s=25,c='b',marker='+')
+scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
+quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
+quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
+fig.savefig(pathfigs+'/labels_view_'+str(it)+'.png')
+# Plotting prediction error for the position X/Y
+fig.clear()
+scatter((pred[:,0]-labels[:,0]),(pred[:,1]-labels[:,1]),s=25,c='g')
+fig.savefig(pathfigs+'/error_xy_'+str(it)+'.png')
+# Plotting angle error (histogram)
+fig.clear()
+hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
+fig.savefig(pathfigs+'/error_angle_'+str(it)+'.png')
+if (it>=50):
+	# Plotting loss 
+	fig.clear()
+	plt.plot(arange(it)[50:it], train_loss[50:it])
+	plt.xlabel('iteration')
+	plt.ylabel('train loss')
+	fig.savefig(pathfigs+'/loss_'+str(it)+'.png')
+# Tests to visualize histograms of conv and fc param weights
+# Conv1
+fig.clear()
+hist(solver.net.params['conv1'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/conv1_hist_'+str(it)+'.png')
+# Conv2
+fig.clear()
+hist(solver.net.params['conv2'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/conv2_hist_'+str(it)+'.png')
+# Conv3
+fig.clear()
+hist(solver.net.params['conv3'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/conv3_hist_'+str(it)+'.png')
+# Conv4
+fig.clear()
+hist(solver.net.params['conv4'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/conv4_hist_'+str(it)+'.png')
+# Conv5
+fig.clear()
+hist(solver.net.params['conv5'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/conv5_hist_'+str(it)+'.png')
+# fc6
+fig.clear()
+hist(solver.net.params['fc6'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/fc6_hist_'+str(it)+'.png')
+# fc7
+fig.clear()
+hist(solver.net.params['fc7'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/fc7_hist_'+str(it)+'.png')
+# fc8
+fig.clear()
+hist(solver.net.params['fc8'][0].diff[:, 0].flatten())
+fig.savefig(pathfigs+'/fc8_hist_'+str(it)+'.png')
+# Norm1 out
+fig.clear()
+hist(solver.test_nets[0].blobs['norm1'].data[:,0].flatten())
+fig.savefig(pathfigs+'/norm1_out_hist_'+str(it)+'.png')
+# Norm2 out
+fig.clear()
+hist(solver.test_nets[0].blobs['norm2'].data[:,0].flatten())
+fig.savefig(pathfigs+'/norm2_out_hist_'+str(it)+'.png')
+# Pool5 out
+fig.clear()
+hist(solver.test_nets[0].blobs['pool5'].data[:,0].flatten())
+fig.savefig(pathfigs+'/pool5_out_hist_'+str(it)+'.png')
+
+
+
+solver.net.forward()
 
 # Ploting the first images of the train and val datasets (mosaique des images si batch size > 1, ici selection de 1 dans data)
-fig = figure()
 imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352),cmap='gray')
 fig.savefig(pathfigs+'/image1_trainset.png')
 fig.clear()
@@ -59,7 +165,7 @@ fig.savefig(pathfigs+'/image1_valset.png')
 train_loss = zeros(max_iter)
 train_loss_manual = zeros(max_iter)
 # the main solver loop
-for it in range(max_iter):
+for it in range(1,max_iter):
 	solver.step(1)  # SGD by Caffe
 	# store the train loss
 	train_loss[it] = solver.net.blobs['loss'].data
