@@ -13,7 +13,7 @@ scale = 0
 for line in lines:
 	scale = float(line)
 f.close()
-
+print(scale)
 
 f=open('reference_point.txt',"r")
 line = f.readline()
@@ -21,6 +21,9 @@ ref_x = float(line)
 line = f.readline()
 ref_y = float(line)
 f.close()
+print(ref_x)
+print(ref_y)
+
 
 filenames=["train","val","test"]
 

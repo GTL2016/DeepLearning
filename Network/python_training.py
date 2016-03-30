@@ -12,7 +12,7 @@ import glob
 test_iter = 8
 batch_size_train = 30
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-max_iter = 30000 #Number of iterations for the training
+max_iter = 100000 #Number of iterations for the training
 test_interval = 200 #interval between two tests
 
 if sys.argv[1]=='cpu':

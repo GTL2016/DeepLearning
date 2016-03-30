@@ -6,7 +6,7 @@ import os
 # This factor is computed so that the rescaled values are distributed in an interval of size 'label_range'
 
 filenames=["train","val","test"]
-label_range = 1
+label_range = 10
 
 t=open("scale.txt","w")
 if (os.stat("scale.txt").st_size != 0):
