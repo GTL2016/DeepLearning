@@ -58,6 +58,8 @@ def test_and_plot( it ):
 		solver.test_nets[0].forward()
 		labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
 		pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
+		test_loss[it/test_interval] = test_loss[it/test_interval]+solver.test_nets[0].blobs['loss'].data
+	test_loss[it/test_interval] = test_loss[it/test_interval]/test_it
 	# Plotting conv1 weights layer at test interval
 	fig.clear()
 	imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
@@ -100,10 +102,10 @@ def test_and_plot( it ):
 	fig.clear()
 	hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
 	fig.savefig(pathiter+'/error_angle_'+str(it)+'.png')
-	if (it>=50):
+	if (it>=test_interval):
 		# Plotting loss 
 		fig.clear()
-		plt.plot(arange(it)[50:it], train_loss[50:it], marker='.', linestyle='None', color='b')
+		plt.plot(arange(it)[test_interval:it], train_loss[test_interval:it], marker='.', linestyle='None', color='b')
 		plt.xlabel('iteration')
 		plt.ylabel('train loss')
 		fig.savefig(pathiter+'/loss_'+str(it)+'.png')
@@ -112,7 +114,7 @@ def test_and_plot( it ):
 		#print(shape(arange(0,it+1,test_interval)))
 		#print(it/test_interval)
 		#print(test_loss[0:int(it/test_interval)])
-		plt.plot(arange(0,it+1,test_interval), test_loss[0:1+it/test_interval], color='g')
+		plt.plot(arange(test_interval,it+1,test_interval), test_loss[1:1+it/test_interval], color='g')
 		plt.ylabel('test loss (green)')
 		fig.savefig(pathiter+'/test_loss_'+str(it)+'.png')
 	# Tests to visualize histograms of conv and fc param weights
