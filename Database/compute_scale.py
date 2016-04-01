@@ -28,4 +28,4 @@ for f in filenames:
 scale = label_range/(max(labelx_max-labelx_min,labely_max-labely_min))
 print "Scaling factor = "+str(scale)
 t.write(str(scale))
-t.close
+t.close()
