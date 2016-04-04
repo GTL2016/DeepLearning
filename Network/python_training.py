@@ -13,9 +13,9 @@ import glob
 import shutil
 
 test_iter = 8
-batch_size_train = 30
+batch_size_train = 10
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-max_iter = 300000 #Number of iterations for the training
+max_iter = 100000 #Number of iterations for the training
 test_interval = 200 #interval between two tests
 
 if sys.argv[1]=='cpu':
@@ -78,6 +78,10 @@ def test_and_plot( it ):
 	filters = solver.net.params['conv1'][0].data
 	imshow(vis_square(filters.transpose(0, 2, 3, 1)),cmap='gray')
 	fig.savefig(pathiter+'/conv1_'+str(it)+'.png')
+	# Plotting output of Conv 1
+	fig.clear()
+	imshow(vis_square(solver.net.blobs['conv1'].data[0],padval=1),cmap='gray')
+	fig.savefig(pathiter+'/conv1_out_'+str(it)+'.png')
 	# Plotting output of pool1 layer at test interval
 	fig.clear()
 	imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
@@ -284,3 +288,4 @@ for it in range(1,max_iter):
 # plt.imshow()
 # plt.subplot(1,3,2)
 # plt.imshow()
+
