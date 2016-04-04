@@ -44,6 +44,19 @@ for dire in dirs:
 os.chdir('..') # coming back to Network directory
 os.makedirs(pathfigs+'/label_views')
 
+def vis_square(data, padsize=1, padval=0):
+	data1 = data - data.min()
+	data1 /= data1.max()
+	# force the number of filters to be square
+	n = int(np.ceil(np.sqrt(data1.shape[0])))
+	padding = ((0, n ** 2 - data1.shape[0]), (0, padsize), (0, padsize)) + ((0, 0),) * (data1.ndim - 3)
+	data1 = np.pad(data1, padding, mode='constant', constant_values=(padval, padval))
+
+	# tile the filters into an image
+	data1 = data1.reshape((n, n) + data1.shape[1:]).transpose((0, 2, 1, 3) + tuple(range(4, data1.ndim + 1)))
+	data1 = data1.reshape((n * data1.shape[1], n * data1.shape[3]) + data1.shape[4:])
+	return data1
+
 
 def test_and_plot( it ):
 	"Create the result plots"
@@ -62,7 +75,8 @@ def test_and_plot( it ):
 	test_loss[it/test_interval] = test_loss[it/test_interval]/test_it
 	# Plotting conv1 weights layer at test interval
 	fig.clear()
-	imshow(solver.net.params['conv1'][0].diff[:, 0].reshape(12,8, 11, 11).transpose(0, 2, 1, 3).reshape(12*11, 8*11),cmap='gray')
+	filters = solver.net.params['conv1'][0].data
+	imshow(vis_square(filters.transpose(0, 2, 3, 1)),cmap='gray')
 	fig.savefig(pathiter+'/conv1_'+str(it)+'.png')
 	# Plotting output of pool1 layer at test interval
 	fig.clear()
