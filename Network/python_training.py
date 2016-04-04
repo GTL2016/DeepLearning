@@ -134,39 +134,39 @@ def test_and_plot( it ):
 	# Tests to visualize histograms of conv and fc param weights
 	# Conv1
 	fig.clear()
-	hist(solver.net.params['conv1'][0].diff[:, :].flatten())
+	hist(solver.net.params['conv1'][0].data.flatten())
 	fig.savefig(pathiter+'/conv1_hist_'+str(it)+'.png')
 	# Conv2
 	fig.clear()
-	hist(solver.net.params['conv2'][0].diff[:, :].flatten())
+	hist(solver.net.params['conv2'][0].data.flatten())
 	fig.savefig(pathiter+'/conv2_hist_'+str(it)+'.png')
 	# Conv3
 	fig.clear()
-	hist(solver.net.params['conv3'][0].diff[:, :].flatten())
+	hist(solver.net.params['conv3'][0].data.flatten())
 	fig.savefig(pathiter+'/conv3_hist_'+str(it)+'.png')
 	# Conv4
 	fig.clear()
-	hist(solver.net.params['conv4'][0].diff[:, :].flatten())
+	hist(solver.net.params['conv4'][0].data.flatten())
 	fig.savefig(pathiter+'/conv4_hist_'+str(it)+'.png')
 	# Conv5
 	fig.clear()
-	hist(solver.net.params['conv5'][0].diff[:, :].flatten())
+	hist(solver.net.params['conv5'][0].data.flatten())
 	fig.savefig(pathiter+'/conv5_hist_'+str(it)+'.png')
 	# fc6
 	fig.clear()
-	hist(solver.net.params['fc6'][0].diff[:, :].flatten())
+	hist(solver.net.params['fc6'][0].data.flatten())
 	fig.savefig(pathiter+'/fc6_hist_'+str(it)+'.png')
 	# fc7
 	fig.clear()
-	hist(solver.net.params['fc7'][0].diff[:, :].flatten())
+	hist(solver.net.params['fc7'][0].data.flatten())
 	fig.savefig(pathiter+'/fc7_hist_'+str(it)+'.png')
 	# fc8
 	fig.clear()
-	hist(solver.net.params['fc8'][0].diff[:, :].flatten())
+	hist(solver.net.params['fc8'][0].data.flatten())
 	fig.savefig(pathiter+'/fc8_hist_'+str(it)+'.png')
 	# fc8 bias
 	fig.clear()
-	hist(solver.net.params['fc8'][1].diff[:].flatten())
+	hist(solver.net.params['fc8'][1].data.flatten())
 	fig.savefig(pathiter+'/fc8_bias_hist_'+str(it)+'.png')
 	# Norm1 out
 	fig.clear()
