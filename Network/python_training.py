@@ -13,10 +13,10 @@ import glob
 import shutil
 
 test_iter = 8
-batch_size_train = 10
+batch_size_train = 60
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 max_iter = 100000 #Number of iterations for the training
-test_interval = 200 #interval between two tests
+test_interval = 100 #interval between two tests
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()

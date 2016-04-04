@@ -13,7 +13,7 @@ layer {
   }
   data_param {
     source: "../Database/train_rescaled_data_lmdb"
-    batch_size: 10
+    batch_size: 60
     backend: LMDB
   }
 }
@@ -30,7 +30,7 @@ layer {
   }
   data_param {
     source: "../Database/train_rescaled_label_lmdb"
-    batch_size: 10
+    batch_size: 60
     backend: LMDB
   }
 }
@@ -90,7 +90,7 @@ layer {
     stride: 4
     weight_filler {
       type: "gaussian"
-      std: 0.05
+      std: 0.1
     }
     bias_filler {
       type: "constant"
@@ -146,7 +146,7 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.05
+      std: 0.1
     }
     bias_filler {
       type: "constant"
@@ -201,7 +201,7 @@ layer {
     kernel_size: 3
     weight_filler {
       type: "gaussian"
-      std: 0.05
+      std: 0.1
     }
     bias_filler {
       type: "constant"
@@ -235,7 +235,7 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.05
+      std: 0.1
     }
     bias_filler {
       type: "constant"
@@ -269,7 +269,7 @@ layer {
     group: 2
     weight_filler {
       type: "gaussian"
-      std: 0.05
+      std: 0.1
     }
     bias_filler {
       type: "constant"
