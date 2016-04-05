@@ -13,16 +13,25 @@ import glob
 import shutil
 
 test_iter = 8
-batch_size_train = 60
+batch_size_train = 30
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-max_iter = 100000 #Number of iterations for the training
-test_interval = 100 #interval between two tests
+max_iter = 200000 #Number of iterations for the training
+test_interval = 200 #interval between two tests
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 solver = caffe.SGDSolver('solver.prototxt')
+
+scale = 0;
+os.chdir('../Database')
+f=open('scale.txt',"r")
+lines = f.readlines()
+for line in lines:
+	scale = float(line)
+os.chdir('../Network')
+print('Scale = '+str(scale))
 
 # Clearing the snap directory
 directory='./snap'
@@ -72,7 +81,7 @@ def test_and_plot( it ):
 		labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
 		pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
 		test_loss[it/test_interval] = test_loss[it/test_interval]+solver.test_nets[0].blobs['loss'].data
-	test_loss[it/test_interval] = test_loss[it/test_interval]/test_it
+	test_loss[it/test_interval] = test_loss[it/test_interval]/(test_it*scale*scale)
 	# Plotting conv1 weights layer at test interval
 	fig.clear()
 	filters = solver.net.params['conv1'][0].data
@@ -238,12 +247,12 @@ train_loss_manual = zeros(max_iter)
 for it in range(1,max_iter):
 	solver.step(1)  # SGD by Caffe
 	# store the train loss
-	train_loss[it] = solver.net.blobs['loss'].data
+	train_loss[it] = solver.net.blobs['loss'].data/(scale*scale)
 	label_loss = solver.net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_train,4)
 	pred_loss = solver.net.blobs['fc8'].data[:]
-	train_loss_manual_vect = ((label_loss[:,0]-pred_loss[:,0])*(label_loss[:,0]-pred_loss[:,0])+(label_loss[:,1]-pred_loss[:,1])*(label_loss[:,1]-pred_loss[:,1])+(label_loss[:,2]-pred_loss[:,2])*(label_loss[:,2]-pred_loss[:,2])+(label_loss[:,3]-pred_loss[:,3])*(label_loss[:,3]-pred_loss[:,3]))
-	train_loss_manual[it] = 0.5*np.mean(train_loss_manual_vect)
-	print(train_loss[it]-train_loss_manual[it])
+	#train_loss_manual_vect = ((label_loss[:,0]-pred_loss[:,0])*(label_loss[:,0]-pred_loss[:,0])+(label_loss[:,1]-pred_loss[:,1])*(label_loss[:,1]-pred_loss[:,1])+(label_loss[:,2]-pred_loss[:,2])*(label_loss[:,2]-pred_loss[:,2])+(label_loss[:,3]-pred_loss[:,3])*(label_loss[:,3]-pred_loss[:,3]))
+	#train_loss_manual[it] = 0.5*np.mean(train_loss_manual_vect)
+	#print(train_loss[it]-train_loss_manual[it])
 	# start the forward pass at conv1 to avoid loading new data
 	solver.test_nets[0].forward(start='conv1')
 	# run a full test every so often (Caffe can also do this for us and write to a log, but we show here how to do it directly in Python, where more complicated things are easier.)
