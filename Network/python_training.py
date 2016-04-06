@@ -13,10 +13,12 @@ import glob
 import shutil
 
 test_iter = 8
-batch_size_train = 30
 batch_size_test = 25 #test_iter*batch_size = nb of test images
+batch_size_train = 30
 max_iter = 200000 #Number of iterations for the training
 test_interval = 200 #interval between two tests
+im_height = 227
+im_width = 227
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -30,6 +32,7 @@ f=open('scale.txt',"r")
 lines = f.readlines()
 for line in lines:
 	scale = float(line)
+f.close()
 os.chdir('../Network')
 print('Scale = '+str(scale))
 
@@ -93,23 +96,28 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/conv1_out_'+str(it)+'.png')
 	# Plotting output of pool1 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool1'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool1_'+str(it)+'.png')
 	# Plotting output of norm1 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['norm1'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/norm1_'+str(it)+'.png')
 	# Plotting output of pool2 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool2'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool2_'+str(it)+'.png')
 	# Plotting output of norm2 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['norm2'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/norm2_'+str(it)+'.png')
 	# Plotting output of pool5 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool5'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool5_'+str(it)+'.png')
 	# Plotting position and predicted position at test interval
 	fig.clear()
@@ -129,7 +137,7 @@ def test_and_plot( it ):
 	fig.clear()
 	hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
 	fig.savefig(pathiter+'/error_angle_'+str(it)+'.png')
-	if (it>=test_interval):
+	if (it>=2*test_interval):
 		# Plotting loss 
 		fig.clear()
 		plt.plot(arange(it)[test_interval:it], train_loss[test_interval:it], marker='.', linestyle='None', color='b')
@@ -138,11 +146,10 @@ def test_and_plot( it ):
 		fig.savefig(pathiter+'/loss_'+str(it)+'.png')
 		# Plotting test loss
 		fig.clear()
-		#print(shape(arange(0,it+1,test_interval)))
-		#print(it/test_interval)
-		#print(test_loss[0:int(it/test_interval)])
-		plt.plot(arange(test_interval,it+1,test_interval), test_loss[1:1+it/test_interval], color='g')
-		plt.ylabel('test loss (green)')
+		axis = arange(2*test_interval,it+1,test_interval)
+		plt.plot(axis, test_loss[2:1+it/test_interval], 'g')
+		plt.plot(axis, train_loss_average[2:1+it/test_interval], 'b')
+		plt.ylabel('test loss (green), train loss (blue)')
 		fig.savefig(pathiter+'/test_loss_'+str(it)+'.png')
 	# Tests to visualize histograms of conv and fc param weights
 	# Conv1
@@ -220,6 +227,7 @@ solver.test_nets[0].forward()
 # Plotting the initialisation
 fig = figure()
 test_loss = zeros(1+floor(max_iter/test_interval))
+train_loss_average = zeros(1+floor(max_iter/test_interval))
 test_and_plot(0)
 
 
@@ -230,19 +238,19 @@ solver.net.forward()
 fig.clear()
 #print(shape(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2)))
 #im_1 = np.zeros((240,352,3))
-#im_1[:,:,0] = solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352)
-#im_1[:,:,1] = solver.net.blobs['images'].data[:1, 1].transpose(1, 0, 2).reshape(240, 352)
-#im_1[:,:,2] = solver.net.blobs['images'].data[:1, 2].transpose(1, 0, 2).reshape(240, 352)
+#im_1[:,:,0] = solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height, im_width)
+#im_1[:,:,1] = solver.net.blobs['images'].data[:1, 1].transpose(1, 0, 2).reshape(im_height, im_width)
+#im_1[:,:,2] = solver.net.blobs['images'].data[:1, 2].transpose(1, 0, 2).reshape(im_height, im_width)
 #imshow(im_1, norm=Normalize())
-imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
+imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height,im_width),cmap='gray')
 fig.savefig(pathfigs+'/image1_trainset.png')
 fig.clear()
-imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
+imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height,im_width),cmap='gray')
 fig.savefig(pathfigs+'/image1_valset.png')
 
 # Training
 train_loss = zeros(max_iter)
-train_loss_manual = zeros(max_iter)
+#train_loss_manual = zeros(max_iter)
 # the main solver loop
 for it in range(1,max_iter):
 	solver.step(1)  # SGD by Caffe
@@ -257,6 +265,7 @@ for it in range(1,max_iter):
 	solver.test_nets[0].forward(start='conv1')
 	# run a full test every so often (Caffe can also do this for us and write to a log, but we show here how to do it directly in Python, where more complicated things are easier.)
 	if it % test_interval == 0:
+		train_loss_average[it/test_interval] = np.sum(train_loss[it-test_interval:it])/test_interval
 		test_and_plot(it)
 		fig.clear()
 		scatter(label_loss[:,0],label_loss[:,1],s=25,c='g',marker='+')
