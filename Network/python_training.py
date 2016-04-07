@@ -17,8 +17,7 @@ batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30
 max_iter = 200000 #Number of iterations for the training
 test_interval = 200 #interval between two tests
-im_height = 227
-im_width = 227
+stepsize = 50000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -144,13 +143,21 @@ def test_and_plot( it ):
 		plt.xlabel('iteration')
 		plt.ylabel('train loss')
 		fig.savefig(pathiter+'/loss_'+str(it)+'.png')
-		# Plotting test loss
+		# Plotting test loss and train loss average
 		fig.clear()
 		axis = arange(2*test_interval,it+1,test_interval)
 		plt.plot(axis, test_loss[2:1+it/test_interval], 'g')
 		plt.plot(axis, train_loss_average[2:1+it/test_interval], 'b')
 		plt.ylabel('test loss (green), train loss (blue)')
 		fig.savefig(pathiter+'/test_loss_'+str(it)+'.png')
+		#~ if (it>stepsize):
+			#~ # Plotting test loss and train loss average on the current step
+			#~ fig.clear()
+			#~ axis = arange(floor(it/stepsize)*stepsize,it+1,test_interval)
+			#~ plt.plot(axis, test_loss[floor(it/stepsize)*stepsize+1:1+it/test_interval], 'g')
+			#~ plt.plot(axis, train_loss_average[floor(it/stepsize)*stepsize+1:1+it/test_interval], 'b')
+			#~ plt.ylabel('test loss (green), train loss (blue)')
+			#~ fig.savefig(pathiter+'/test_loss_step'+str(it)+'.png')
 	# Tests to visualize histograms of conv and fc param weights
 	# Conv1
 	fig.clear()
@@ -242,10 +249,12 @@ fig.clear()
 #im_1[:,:,1] = solver.net.blobs['images'].data[:1, 1].transpose(1, 0, 2).reshape(im_height, im_width)
 #im_1[:,:,2] = solver.net.blobs['images'].data[:1, 2].transpose(1, 0, 2).reshape(im_height, im_width)
 #imshow(im_1, norm=Normalize())
-imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height,im_width),cmap='gray')
+
+shape = solver.net.blobs['images'].data[:1, 0].transpose(1, 2, 0).shape
+imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 2, 0).reshape(shape[0],shape[1]),cmap='gray')
 fig.savefig(pathfigs+'/image1_trainset.png')
 fig.clear()
-imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height,im_width),cmap='gray')
+imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 2, 0).reshape(shape[0],shape[1]),cmap='gray')
 fig.savefig(pathfigs+'/image1_valset.png')
 
 # Training
