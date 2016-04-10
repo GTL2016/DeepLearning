@@ -12,8 +12,8 @@ from google.protobuf import text_format
 import glob
 import shutil
 
-test_iter = 4
-batch_size_test = 5 #test_iter*batch_size = nb of test images
+test_iter = 8
+batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30
 max_iter = 300000 #Number of iterations for the training
 test_interval = 100 #interval between two tests

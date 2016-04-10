@@ -9,8 +9,6 @@ if (os.stat("reference_point.txt").st_size != 0):
 	os.remove('reference_point.txt')
 	t=open("reference_point.txt","w")
 
-
-
 ## If we want the reference to best the mean point
 #labelx_tot = 0
 #labely_tot = 0

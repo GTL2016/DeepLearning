@@ -20,7 +20,6 @@ if ((len(sys.argv)==2 or len(sys.argv)==4)):
 	command = 'shuf '+data+' > '+sys.argv[1]+'2.txt'
 	os.system(command)
 	data = sys.argv[1]+'2.txt'
-	print(data)
 	lmdb_data_name = sys.argv[1]+'_data_lmdb'
 	lmdb_label_name = sys.argv[1]+'_label_lmdb'
 	
