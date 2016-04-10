@@ -16,7 +16,7 @@ test_iter = 8
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30
 max_iter = 300000 #Number of iterations for the training
-test_interval = 100 #interval between two tests
+test_interval = 500 #interval between two tests
 stepsize = 50000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':
