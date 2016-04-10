@@ -12,11 +12,11 @@ from google.protobuf import text_format
 import glob
 import shutil
 
-test_iter = 8
-batch_size_test = 25 #test_iter*batch_size = nb of test images
+test_iter = 4
+batch_size_test = 5 #test_iter*batch_size = nb of test images
 batch_size_train = 30
-max_iter = 200000 #Number of iterations for the training
-test_interval = 200 #interval between two tests
+max_iter = 300000 #Number of iterations for the training
+test_interval = 100 #interval between two tests
 stepsize = 50000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':
@@ -134,7 +134,7 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/error_xy_'+str(it)+'.png')
 	# Plotting angle error (histogram)
 	fig.clear()
-	hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
+	hist(fmod(180*(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))/math.pi,180))
 	fig.savefig(pathiter+'/error_angle_'+str(it)+'.png')
 	if (it>=2*test_interval):
 		# Plotting loss 
@@ -150,14 +150,20 @@ def test_and_plot( it ):
 		plt.plot(axis, train_loss_average[2:1+it/test_interval], 'b')
 		plt.ylabel('test loss (green), train loss (blue)')
 		fig.savefig(pathiter+'/test_loss_'+str(it)+'.png')
-		#~ if (it>stepsize):
-			#~ # Plotting test loss and train loss average on the current step
-			#~ fig.clear()
-			#~ axis = arange(floor(it/stepsize)*stepsize,it+1,test_interval)
-			#~ plt.plot(axis, test_loss[floor(it/stepsize)*stepsize+1:1+it/test_interval], 'g')
-			#~ plt.plot(axis, train_loss_average[floor(it/stepsize)*stepsize+1:1+it/test_interval], 'b')
-			#~ plt.ylabel('test loss (green), train loss (blue)')
-			#~ fig.savefig(pathiter+'/test_loss_step'+str(it)+'.png')
+		if (it>stepsize):
+			# Plotting test loss and train loss average on the current step
+			fig.clear()
+			axis = arange(floor(it/stepsize)*stepsize,it+1,test_interval)
+			print('axis')
+			print(axis.shape)
+			print(axis)
+			print('test_loss_step')
+			print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval].shape)
+			print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval])
+			plt.plot(axis, test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval], 'g')
+			plt.plot(axis, train_loss_average[ceil(floor(it/stepsize*stepsize)/test_interval):1+it/test_interval], 'b')
+			plt.ylabel('test loss (green), train loss (blue)')
+			fig.savefig(pathiter+'/test_loss_step'+str(it)+'.png')
 	# Tests to visualize histograms of conv and fc param weights
 	# Conv1
 	fig.clear()
