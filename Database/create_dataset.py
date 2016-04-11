@@ -81,9 +81,9 @@ if pathtoimages !="nopath":
 	number_of_classes = 200
 	# Max number of instances for each class
 	max_in_class={}
-	max_in_class["train"]=5
-	max_in_class["val"]=math.floor(max_in_class["train"]/3)
-	max_in_class["test"]=math.floor(max_in_class["train"]/3)
+	max_in_class["train"]=10
+	max_in_class["val"]=math.floor(max_in_class["train"]/5)
+	max_in_class["test"]=math.floor(max_in_class["train"]/5)
 	# Size of each dataset accordingly
 	lmax={}
 	lmax["train"]=number_of_classes*max_in_class["train"]

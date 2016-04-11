@@ -50,10 +50,9 @@ if ((len(sys.argv)==2 or len(sys.argv)==4)):
 	for idx in range(int(math.ceil(len(Label1)/1000.0))):
 		in_db_label = lmdb.open(lmdb_label_name, map_size=int(1e12))
 		with in_db_label.begin(write=True) as in_txn:
-			for label_idx, label_ in enumerate(Label1[(1000*idx):(1000*(idx+1))]):
-				im_dat = caffe.io.array_to_datum(np.array([label_,Label2[label_idx],Label3[label_idx],Label4[label_idx]]).astype(float).reshape(4,1,1))
+			for label_idx in range(1000*idx,1000*(idx+1)):
+				im_dat = caffe.io.array_to_datum(np.array([Label1[label_idx],Label2[label_idx],Label3[label_idx],Label4[label_idx]]).astype(float).reshape(4,1,1))
 				in_txn.put('{:0>10d}'.format(1000*idx + label_idx), im_dat.SerializeToString())
-
 				string_ = str(1000*idx+label_idx+1) + ' / ' + str(len(Label1))
 				sys.stdout.write("\r%s" % string_)
 				sys.stdout.flush()

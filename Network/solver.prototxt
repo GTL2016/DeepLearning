@@ -1,6 +1,6 @@
 net: "./train_val.prototxt"
-test_iter: 8        # specifies how many forward passes the test should carry out: batch size x test iterations = nb of testing images
-test_interval: 500     # Carry out testing every "test_interval" training iterations.
+test_iter: 16        # specifies how many forward passes the test should carry out: batch size x test iterations = nb of testing images
+test_interval: 100     # Carry out testing every "test_interval" training iterations.
 base_lr: 0.0008         # begin training at a learning rate of 0
 momentum: 0.5
 weight_decay: 0.0001
@@ -8,7 +8,7 @@ lr_policy: "step"     # learning rate policy: drop the learning rate in "steps" 
 gamma: 0.8            # drop the learning rate by a factor of 10 : base_lr * gamma ^ (floor(iter / stepsize))
 stepsize: 25000      # drop the learning rate every stepsize iterations 
 display: 1
-max_iter: 200000       # train for 350K iterations total
-snapshot: 1000        # snapshot intermediate results
+max_iter: 300000       # train for 350K iterations total
+snapshot: 5000        # snapshot intermediate results
 snapshot_prefix: "./snap/"
 solver_mode: GPU
