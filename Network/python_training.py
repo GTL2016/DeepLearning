@@ -12,12 +12,12 @@ from google.protobuf import text_format
 import glob
 import shutil
 
-test_iter = 16
+test_iter = 200
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30
-max_iter = 300000 #Number of iterations for the training
-test_interval = 100 #interval between two tests
-stepsize = 25000 #interval between each learning rate decrease
+max_iter = 350000 #Number of iterations for the training
+test_interval = 1000 #interval between two tests
+stepsize = 30000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
@@ -54,6 +54,8 @@ for dire in dirs:
 	shutil.rmtree(dire)
 os.chdir('..') # coming back to Network directory
 os.makedirs(pathfigs+'/label_views')
+
+
 
 def vis_square(data, padsize=1, padval=0):
 	data1 = data - data.min()
@@ -118,6 +120,13 @@ def test_and_plot( it ):
 	#imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
 	imshow(vis_square(solver.test_nets[0].blobs['pool5'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool5_'+str(it)+'.png')
+	####
+	#fig = plt.figure(figsize=(10,60))
+	fig.clear()
+	imshow(solver.test_nets[0].blobs['pool5'].data[:,0:9].reshape(batch_size_test,9*6*6),cmap='gray')
+	fig.savefig(pathiter+'/pool5_batch_'+str(it)+'.png')
+	#fig = plt.figure(figsize=(8,6))
+	####
 	# Plotting position and predicted position at test interval
 	fig.clear()
 	scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
@@ -126,6 +135,7 @@ def test_and_plot( it ):
 	scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
 	quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
 	quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
+	plt.axis('equal')
 	fig.savefig(pathiter+'/labels_view_'+str(it)+'.png')
 	fig.savefig(pathfigs+'/label_views'+'/labels_view_'+str(it)+'.png')
 	# Plotting prediction error for the position X/Y
@@ -154,12 +164,12 @@ def test_and_plot( it ):
 			# Plotting test loss and train loss average on the current step
 			fig.clear()
 			axis = arange(floor(it/stepsize)*stepsize,it+1,test_interval)
-			print('axis')
-			print(axis.shape)
-			print(axis)
-			print('test_loss_step')
-			print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval].shape)
-			print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval])
+			#print('axis')
+			#print(axis.shape)
+			#print(axis)
+			#print('test_loss_step')
+			#print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval].shape)
+			#print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval])
 			plt.plot(axis, test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval], 'g')
 			plt.plot(axis, train_loss_average[ceil(floor(it/stepsize*stepsize)/test_interval):1+it/test_interval], 'b')
 			plt.ylabel('test loss (green), train loss (blue)')
@@ -223,8 +233,9 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/fc6_out_hist_'+str(it)+'.png')
 	return
 
-
-
+# Initializing the bias of the last layer
+#solver.net.params['fc8'][1].data[:]=[0.28, 0.5, 0.29, 0.51]
+#solver.test_nets[0].params['fc8'][1].data[:]=[0.28, 0.5, 0.29, 0.51]
 
 # Printing outputs size and weights size for the current training
 # each output is (batch size, feature dim, spatial dim)
@@ -239,6 +250,10 @@ print(b)
 solver.test_nets[0].forward()
 # Plotting the initialisation
 fig = figure()
+#DefaultSize = fig.get_size_inches()
+#print "Default size in Inches", DefaultSize
+#bigfig = plt.figure(figsize=(8,50))
+
 test_loss = zeros(1+floor(max_iter/test_interval))
 train_loss_average = zeros(1+floor(max_iter/test_interval))
 test_and_plot(0)
@@ -289,6 +304,7 @@ for it in range(1,max_iter):
 		scatter(pred_loss[:,2],pred_loss[:,3],s=25,c='m',marker='+')
 		quiver(label_loss[:,0],label_loss[:,1],label_loss[:,2]-label_loss[:,0],label_loss[:,3]-label_loss[:,1],color='g')
 		quiver(pred_loss[:,0],pred_loss[:,1],pred_loss[:,2]-pred_loss[:,0],pred_loss[:,3]-pred_loss[:,1],color='r')
+		plt.axis('equal')
 		pathiter = pathfigs+'/iter_'+str(it)
 		fig.savefig(pathiter+'/labels_view_train_'+str(it)+'.png')
 		fig.savefig(pathfigs+'/label_views'+'/labels_view_train_'+str(it)+'.png')

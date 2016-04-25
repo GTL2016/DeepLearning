@@ -12,17 +12,34 @@ from google.protobuf import text_format
 import glob
 import shutil
 
-test_iter = 8
-batch_size_train = 60
+plt.rcParams['figure.figsize'] = (10, 10)
+plt.rcParams['image.interpolation'] = 'nearest'
+plt.rcParams['image.cmap'] = 'gray'
+
+test_iter = 200
 batch_size_test = 25 #test_iter*batch_size = nb of test images
-max_iter = 100000 #Number of iterations for the training
+batch_size_train = 30
+max_iter = 350000 #Number of iterations for the training
 test_interval = 100 #interval between two tests
+stepsize = 25000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':
 	caffe.set_mode_cpu()
 elif sys.argv[1]=='gpu':
 	caffe.set_mode_gpu()
 solver = caffe.SGDSolver('solver.prototxt')
+
+scale = 0;
+os.chdir('../Database')
+f=open('scale.txt',"r")
+lines = f.readlines()
+for line in lines:
+	scale = float(line)
+f.close()
+os.chdir('../Network')
+print('Scale = '+str(scale))
+
+
 
 # Loading the pretrained Network weights
 solver.net.params['conv1'][0].data[:,:] = np.load('./weights/conv1.npy')
@@ -35,6 +52,19 @@ solver.net.params['conv2'][1].data[:] = np.load('./weights/conv2_b.npy')
 solver.net.params['conv3'][1].data[:] = np.load('./weights/conv3_b.npy')
 solver.net.params['conv4'][1].data[:] = np.load('./weights/conv4_b.npy')
 solver.net.params['conv5'][1].data[:] = np.load('./weights/conv5_b.npy')
+
+solver.test_nets[0].params['conv1'][0].data[:,:] = np.load('./weights/conv1.npy')
+solver.test_nets[0].params['conv2'][0].data[:,:] = np.load('./weights/conv2.npy')
+solver.test_nets[0].params['conv3'][0].data[:,:] = np.load('./weights/conv3.npy')
+solver.test_nets[0].params['conv4'][0].data[:,:] = np.load('./weights/conv4.npy')
+solver.test_nets[0].params['conv5'][0].data[:,:] = np.load('./weights/conv5.npy')
+solver.test_nets[0].params['conv1'][1].data[:] = np.load('./weights/conv1_b.npy')
+solver.test_nets[0].params['conv2'][1].data[:] = np.load('./weights/conv2_b.npy')
+solver.test_nets[0].params['conv3'][1].data[:] = np.load('./weights/conv3_b.npy')
+solver.test_nets[0].params['conv4'][1].data[:] = np.load('./weights/conv4_b.npy')
+solver.test_nets[0].params['conv5'][1].data[:] = np.load('./weights/conv5_b.npy')
+
+
 
 
 # Clearing the snap directory
@@ -86,7 +116,7 @@ def test_and_plot( it ):
 		labels = np.concatenate((labels,solver.test_nets[0].blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_test,4)))
 		pred = np.concatenate((pred,solver.test_nets[0].blobs['fc8'].data[:]))
 		test_loss[it/test_interval] = test_loss[it/test_interval]+solver.test_nets[0].blobs['loss'].data
-	test_loss[it/test_interval] = test_loss[it/test_interval]/test_it
+	test_loss[it/test_interval] = test_loss[it/test_interval]/(test_it*scale*scale)
 	# Plotting conv1 weights layer at test interval
 	fig.clear()
 	filters = solver.net.params['conv1'][0].data
@@ -98,24 +128,36 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/conv1_out_'+str(it)+'.png')
 	# Plotting output of pool1 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool1'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool1_'+str(it)+'.png')
 	# Plotting output of norm1 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['norm1'].data[:,0].reshape(batch_size_test,29*43),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['norm1'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/norm1_'+str(it)+'.png')
 	# Plotting output of pool2 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool2'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool2_'+str(it)+'.png')
 	# Plotting output of norm2 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['norm2'].data[:,0].reshape(batch_size_test,14*21),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['norm2'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/norm2_'+str(it)+'.png')
 	# Plotting output of pool5 layer at test interval
 	fig.clear()
-	imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+	#imshow(solver.test_nets[0].blobs['pool5'].data[:,0].reshape(batch_size_test,7*10),cmap='gray')
+	imshow(vis_square(solver.test_nets[0].blobs['pool5'].data[0],padval=1),cmap='gray')
 	fig.savefig(pathiter+'/pool5_'+str(it)+'.png')
+	####
+	#fig = plt.figure(figsize=(10,60))
+	fig.clear()
+	imshow(solver.test_nets[0].blobs['pool5'].data[:,0:9].reshape(batch_size_test,9*6*6),cmap='gray')
+	fig.savefig(pathiter+'/pool5_batch_'+str(it)+'.png')
+	#fig = plt.figure(figsize=(8,6))
+	####
 	# Plotting position and predicted position at test interval
 	fig.clear()
 	scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
@@ -124,6 +166,7 @@ def test_and_plot( it ):
 	scatter(pred[:,2],pred[:,3],s=25,c='m',marker='+')
 	quiver(labels[:,0],labels[:,1],labels[:,2]-labels[:,0],labels[:,3]-labels[:,1],color='g')
 	quiver(pred[:,0],pred[:,1],pred[:,2]-pred[:,0],pred[:,3]-pred[:,1],color='r')
+	plt.axis('equal')
 	fig.savefig(pathiter+'/labels_view_'+str(it)+'.png')
 	fig.savefig(pathfigs+'/label_views'+'/labels_view_'+str(it)+'.png')
 	# Plotting prediction error for the position X/Y
@@ -132,23 +175,36 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/error_xy_'+str(it)+'.png')
 	# Plotting angle error (histogram)
 	fig.clear()
-	hist(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))
+	hist(fmod(180*(np.arctan(pred[:,3]-pred[:,1],pred[:,2]-pred[:,0])-np.arctan(labels[:,3]-labels[:,1],labels[:,2]-labels[:,0]))/math.pi,180))
 	fig.savefig(pathiter+'/error_angle_'+str(it)+'.png')
-	if (it>=test_interval):
+	if (it>=2*test_interval):
 		# Plotting loss 
 		fig.clear()
 		plt.plot(arange(it)[test_interval:it], train_loss[test_interval:it], marker='.', linestyle='None', color='b')
 		plt.xlabel('iteration')
 		plt.ylabel('train loss')
 		fig.savefig(pathiter+'/loss_'+str(it)+'.png')
-		# Plotting test loss
+		# Plotting test loss and train loss average
 		fig.clear()
-		#print(shape(arange(0,it+1,test_interval)))
-		#print(it/test_interval)
-		#print(test_loss[0:int(it/test_interval)])
-		plt.plot(arange(test_interval,it+1,test_interval), test_loss[1:1+it/test_interval], color='g')
-		plt.ylabel('test loss (green)')
+		axis = arange(2*test_interval,it+1,test_interval)
+		plt.plot(axis, test_loss[2:1+it/test_interval], 'g')
+		plt.plot(axis, train_loss_average[2:1+it/test_interval], 'b')
+		plt.ylabel('test loss (green), train loss (blue)')
 		fig.savefig(pathiter+'/test_loss_'+str(it)+'.png')
+		if (it>stepsize):
+			# Plotting test loss and train loss average on the current step
+			fig.clear()
+			axis = arange(floor(it/stepsize)*stepsize,it+1,test_interval)
+			#print('axis')
+			#print(axis.shape)
+			#print(axis)
+			#print('test_loss_step')
+			#print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval].shape)
+			#print(test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval])
+			plt.plot(axis, test_loss[ceil(floor(it/stepsize)*stepsize/test_interval):1+it/test_interval], 'g')
+			plt.plot(axis, train_loss_average[ceil(floor(it/stepsize*stepsize)/test_interval):1+it/test_interval], 'b')
+			plt.ylabel('test loss (green), train loss (blue)')
+			fig.savefig(pathiter+'/test_loss_step'+str(it)+'.png')
 	# Tests to visualize histograms of conv and fc param weights
 	# Conv1
 	fig.clear()
@@ -208,8 +264,9 @@ def test_and_plot( it ):
 	fig.savefig(pathiter+'/fc6_out_hist_'+str(it)+'.png')
 	return
 
-
-
+# Initializing the bias of the last layer
+#solver.net.params['fc8'][1].data[:]=[0.28, 0.5, 0.29, 0.51]
+#solver.test_nets[0].params['fc8'][1].data[:]=[0.28, 0.5, 0.29, 0.51]
 
 # Printing outputs size and weights size for the current training
 # each output is (batch size, feature dim, spatial dim)
@@ -224,7 +281,12 @@ print(b)
 solver.test_nets[0].forward()
 # Plotting the initialisation
 fig = figure()
+#DefaultSize = fig.get_size_inches()
+#print "Default size in Inches", DefaultSize
+#bigfig = plt.figure(figsize=(8,50))
+
 test_loss = zeros(1+floor(max_iter/test_interval))
+train_loss_average = zeros(1+floor(max_iter/test_interval))
 test_and_plot(0)
 
 
@@ -235,33 +297,36 @@ solver.net.forward()
 fig.clear()
 #print(shape(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2)))
 #im_1 = np.zeros((240,352,3))
-#im_1[:,:,0] = solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240, 352)
-#im_1[:,:,1] = solver.net.blobs['images'].data[:1, 1].transpose(1, 0, 2).reshape(240, 352)
-#im_1[:,:,2] = solver.net.blobs['images'].data[:1, 2].transpose(1, 0, 2).reshape(240, 352)
+#im_1[:,:,0] = solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(im_height, im_width)
+#im_1[:,:,1] = solver.net.blobs['images'].data[:1, 1].transpose(1, 0, 2).reshape(im_height, im_width)
+#im_1[:,:,2] = solver.net.blobs['images'].data[:1, 2].transpose(1, 0, 2).reshape(im_height, im_width)
 #imshow(im_1, norm=Normalize())
-imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
+
+shape = solver.net.blobs['images'].data[:1, 0].transpose(1, 2, 0).shape
+imshow(solver.net.blobs['images'].data[:1, 0].transpose(1, 2, 0).reshape(shape[0],shape[1]),cmap='gray')
 fig.savefig(pathfigs+'/image1_trainset.png')
 fig.clear()
-imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 0, 2).reshape(240,352),cmap='gray')
+imshow(solver.test_nets[0].blobs['images'].data[:1, 0].transpose(1, 2, 0).reshape(shape[0],shape[1]),cmap='gray')
 fig.savefig(pathfigs+'/image1_valset.png')
 
 # Training
 train_loss = zeros(max_iter)
-train_loss_manual = zeros(max_iter)
+#train_loss_manual = zeros(max_iter)
 # the main solver loop
 for it in range(1,max_iter):
 	solver.step(1)  # SGD by Caffe
 	# store the train loss
-	train_loss[it] = solver.net.blobs['loss'].data
+	train_loss[it] = solver.net.blobs['loss'].data/(scale*scale)
 	label_loss = solver.net.blobs['labels'].data[:].transpose(0, 2, 1, 3).reshape(batch_size_train,4)
 	pred_loss = solver.net.blobs['fc8'].data[:]
-	train_loss_manual_vect = ((label_loss[:,0]-pred_loss[:,0])*(label_loss[:,0]-pred_loss[:,0])+(label_loss[:,1]-pred_loss[:,1])*(label_loss[:,1]-pred_loss[:,1])+(label_loss[:,2]-pred_loss[:,2])*(label_loss[:,2]-pred_loss[:,2])+(label_loss[:,3]-pred_loss[:,3])*(label_loss[:,3]-pred_loss[:,3]))
-	train_loss_manual[it] = 0.5*np.mean(train_loss_manual_vect)
-	print(train_loss[it]-train_loss_manual[it])
+	#train_loss_manual_vect = ((label_loss[:,0]-pred_loss[:,0])*(label_loss[:,0]-pred_loss[:,0])+(label_loss[:,1]-pred_loss[:,1])*(label_loss[:,1]-pred_loss[:,1])+(label_loss[:,2]-pred_loss[:,2])*(label_loss[:,2]-pred_loss[:,2])+(label_loss[:,3]-pred_loss[:,3])*(label_loss[:,3]-pred_loss[:,3]))
+	#train_loss_manual[it] = 0.5*np.mean(train_loss_manual_vect)
+	#print(train_loss[it]-train_loss_manual[it])
 	# start the forward pass at conv1 to avoid loading new data
 	solver.test_nets[0].forward(start='conv1')
 	# run a full test every so often (Caffe can also do this for us and write to a log, but we show here how to do it directly in Python, where more complicated things are easier.)
 	if it % test_interval == 0:
+		train_loss_average[it/test_interval] = np.sum(train_loss[it-test_interval:it])/test_interval
 		test_and_plot(it)
 		fig.clear()
 		scatter(label_loss[:,0],label_loss[:,1],s=25,c='g',marker='+')
@@ -270,6 +335,7 @@ for it in range(1,max_iter):
 		scatter(pred_loss[:,2],pred_loss[:,3],s=25,c='m',marker='+')
 		quiver(label_loss[:,0],label_loss[:,1],label_loss[:,2]-label_loss[:,0],label_loss[:,3]-label_loss[:,1],color='g')
 		quiver(pred_loss[:,0],pred_loss[:,1],pred_loss[:,2]-pred_loss[:,0],pred_loss[:,3]-pred_loss[:,1],color='r')
+		plt.axis('equal')
 		pathiter = pathfigs+'/iter_'+str(it)
 		fig.savefig(pathiter+'/labels_view_train_'+str(it)+'.png')
 		fig.savefig(pathfigs+'/label_views'+'/labels_view_train_'+str(it)+'.png')

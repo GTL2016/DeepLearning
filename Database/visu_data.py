@@ -32,6 +32,7 @@ figure(1)
 scatter(labels[:,0],labels[:,1],s=25,c='g',marker='+')
 scatter(labels[:,2],labels[:,3],s=25,c='r',marker='+')
 
+
 # Show all figures
 show()
 
