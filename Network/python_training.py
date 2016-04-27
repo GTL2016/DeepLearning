@@ -12,6 +12,10 @@ from google.protobuf import text_format
 import glob
 import shutil
 
+plt.rcParams['figure.figsize'] = (10, 10)
+plt.rcParams['image.interpolation'] = 'nearest'
+plt.rcParams['image.cmap'] = 'gray'
+
 test_iter = 200
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30

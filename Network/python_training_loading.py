@@ -19,8 +19,8 @@ plt.rcParams['image.cmap'] = 'gray'
 test_iter = 200
 batch_size_test = 25 #test_iter*batch_size = nb of test images
 batch_size_train = 30
-max_iter = 350000 #Number of iterations for the training
-test_interval = 100 #interval between two tests
+max_iter = 300000 #Number of iterations for the training
+test_interval = 1000 #interval between two tests
 stepsize = 25000 #interval between each learning rate decrease
 
 if sys.argv[1]=='cpu':

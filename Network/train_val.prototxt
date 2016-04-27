@@ -9,10 +9,10 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    mean_file: "../Database/train_data_mean.binaryproto"
+    mean_file: "../Database/train_data_mean_big.binaryproto"
   }
   data_param {
-    source: "../Database/train_rescaled_data_lmdb"
+    source: "../Database/train_rescaled_data_lmdb_big"
     batch_size: 30
     backend: LMDB
   }
@@ -26,10 +26,10 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    #mean_file: "../Database/train_label_mean.binaryproto"
+    #mean_file: "../Database/train_label_mean_big.binaryproto"
   }
   data_param {
-    source: "../Database/train_rescaled_label_lmdb"
+    source: "../Database/train_rescaled_label_lmdb_big"
     batch_size: 30
     backend: LMDB
   }
@@ -45,10 +45,10 @@ layer {
     phase: TEST
   }
   transform_param {
-    mean_file: "../Database/val_data_mean.binaryproto"
+    mean_file: "../Database/val_data_mean_big.binaryproto"
   }
   data_param {
-    source: "../Database/val_rescaled_data_lmdb"
+    source: "../Database/val_rescaled_data_lmdb_big"
     batch_size:25
     backend: LMDB
   }
@@ -62,10 +62,10 @@ layer {
     phase: TEST
   }
   transform_param {
-    #mean_file: "../Database/val_label_mean.binaryproto"
+    #mean_file: "../Database/val_label_mean_big.binaryproto"
   }
   data_param {
-    source: "../Database/val_rescaled_label_lmdb"
+    source: "../Database/val_rescaled_label_lmdb_big"
     batch_size: 25
     backend: LMDB
   }
@@ -77,11 +77,11 @@ layer {
   bottom: "images"
   top: "conv1"
   param {
-    lr_mult: 0
-    decay_mult: 0
+    lr_mult: 2
+    decay_mult: 2
   }
   param {
-    lr_mult: 0
+    lr_mult: 4
     decay_mult: 0
   }
   convolution_param {
@@ -132,11 +132,11 @@ layer {
   bottom: "norm1"
   top: "conv2"
   param {
-    lr_mult: 0
-    decay_mult: 0
+    lr_mult: 2
+    decay_mult: 2
   }
   param {
-    lr_mult: 0
+    lr_mult: 4
     decay_mult: 0
   }
   convolution_param {
@@ -188,11 +188,11 @@ layer {
   bottom: "norm2"
   top: "conv3"
   param {
-    lr_mult: 0
-    decay_mult: 0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 0
+    lr_mult: 2
     decay_mult: 0
   }
   convolution_param {
@@ -221,11 +221,11 @@ layer {
   bottom: "conv3"
   top: "conv4"
   param {
-    lr_mult: 0
-    decay_mult: 0
+    lr_mult: 1
+    decay_mult:1
   }
   param {
-    lr_mult: 0
+    lr_mult: 2
     decay_mult: 0
   }
   convolution_param {
@@ -255,11 +255,11 @@ layer {
   bottom: "conv4"
   top: "conv5"
   param {
-    lr_mult: 0
-    decay_mult: 0
+    lr_mult: 1
+    decay_mult: 1
   }
   param {
-    lr_mult: 0
+    lr_mult: 2
     decay_mult: 0
   }
   convolution_param {
@@ -311,7 +311,7 @@ layer {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.001
+      std: 0.005
     }
     bias_filler {
       type: "constant"
@@ -351,7 +351,7 @@ layer {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.001
+      std: 0.005
     }
     bias_filler {
       type: "constant"
@@ -381,11 +381,11 @@ layer {
   bottom: "fc7"
   top: "fc8"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0.05
+    decay_mult: 0.05
   }
   param {
-    lr_mult: 2
+    lr_mult: 0.1
     decay_mult: 0
   }
   inner_product_param {

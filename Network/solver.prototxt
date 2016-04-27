@@ -6,7 +6,7 @@ momentum: 0.9
 weight_decay: 0.0005
 lr_policy: "step"     # learning rate policy: drop the learning rate in "steps" by a factor of gamma every stepsize iterations
 gamma: 0.5            # drop the learning rate by a factor of 10 : base_lr * gamma ^ (floor(iter / stepsize))
-stepsize: 25000      # drop the learning rate every stepsize iterations 
+stepsize: 30000      # drop the learning rate every stepsize iterations 
 display: 1
 max_iter: 300000       # train for 350K iterations total
 snapshot: 5000        # snapshot intermediate results
